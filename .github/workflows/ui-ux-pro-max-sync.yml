@@ -10,9 +10,15 @@ on:
       - "tools/ui-ux-pro-max/**"
       - "capabilities/ui-ux-pro-max.lock.json"
       - ".github/workflows/ui-ux-pro-max-sync.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "tools/ui-ux-pro-max/**"
+      - "capabilities/ui-ux-pro-max.lock.json"
+      - ".github/workflows/ui-ux-pro-max-sync.yml"
 
 concurrency:
-  group: ui-ux-pro-max-sync-main
+  group: ui-ux-pro-max-sync-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -23,9 +29,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout repository
+      - name: Resolve target branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "TARGET_BRANCH=${{ github.head_ref }}" >> "$GITHUB_ENV"
+          else
+            echo "TARGET_BRANCH=${{ github.ref_name }}" >> "$GITHUB_ENV"
+          fi
+
+      - name: Checkout target branch
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
           fetch-depth: 0
           persist-credentials: true
 
@@ -87,5 +104,5 @@ jobs:
             exit 0
           fi
           git commit -m "chore(uiux): refresh validated UI UX Pro Max assets [skip ci]"
-          git pull --rebase origin main
-          git push origin HEAD:main
+          git pull --rebase origin "$TARGET_BRANCH"
+          git push origin "HEAD:$TARGET_BRANCH"
