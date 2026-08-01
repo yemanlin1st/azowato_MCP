@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "name": "PEFY Automated Rollbacks Guard",
+  "default_mode": "observe",
+  "activation_variable": "PEFY_AUTOMATED_ROLLBACKS_MODE",
+  "execute_value": "execute",
+  "health": {
+    "url_env": "PEFY_HEALTH_URL",
+    "attempts": 3,
+    "interval_seconds": 20,
+    "timeout_seconds": 2,
+    "accepted_http_status": [200, 201, 202, 204],
+    "expected_json": {
+      "status": ["ok", "healthy", "ready", "configuration_required"]
+    }
+  },
+  "rollback": {
+    "provider": "vercel",
+    "strategy": "instant-rollback-to-previous-production",
+    "max_automatic_rollbacks_per_run": 1,
+    "post_rollback_attempts": 5,
+    "post_rollback_interval_seconds": 15,
+    "stop_on_database_migration": true,
+    "stop_on_missing_secrets": true,
+    "require_evidence": true
+  },
+  "circuit_breakers": {
+    "kill_switch_variable": "PEFY_AUTOMATED_ROLLBACKS_DISABLED",
+    "disabled_value": "true",
+    "migration_patterns": [
+      "migrations/",
+      "prisma/migrations/",
+      "db/migrations/",
+      "alembic/",
+      "schema.sql",
+      "supabase/migrations/"
+    ]
+  }
+}
