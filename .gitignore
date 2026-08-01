@@ -1,0 +1,10 @@
+node_modules/
+.vercel/
+.env
+.env.*
+!.env.example
+.pefy/backups/
+.pefy/tmp/
+__pycache__/
+*.py[cod]
+.DS_Store
