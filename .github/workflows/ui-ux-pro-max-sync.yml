@@ -1,0 +1,55 @@
+name: UI UX Pro Max Sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 3 * * 1"
+
+concurrency:
+  group: ui-ux-pro-max-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install and validate UI UX Pro Max
+        run: bash tools/ui-ux-pro-max/install-uiux-pro-max.sh
+
+      - name: Guard generated assets
+        shell: bash
+        run: |
+          test -f .codex/skills/ui-ux-pro-max/SKILL.md
+          test -f .codex/skills/ui-ux-pro-max/scripts/search.py
+          test -f .pefy/evidence/ui-ux-pro-max-install.json
+          ! grep -RIl --exclude='*.md' -E 'ghp_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}' .codex/skills/ui-ux-pro-max .pefy/evidence
+
+      - name: Commit controlled refresh
+        shell: bash
+        run: |
+          if git diff --quiet -- .codex .github/prompts .pefy/evidence; then
+            echo "No generated changes."
+            exit 0
+          fi
+          git config user.name "PEFY-GG Capability Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add .codex .github/prompts .pefy/evidence
+          git commit -m "chore: refresh UI UX Pro Max generated assets"
+          git push
