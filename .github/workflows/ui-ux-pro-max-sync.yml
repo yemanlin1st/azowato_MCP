@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "23 3 * * 1"
+  push:
+    branches: [main]
+    paths:
+      - "tools/ui-ux-pro-max/**"
+      - "capabilities/ui-ux-pro-max.lock.json"
+      - ".github/workflows/ui-ux-pro-max-sync.yml"
 
 concurrency:
   group: ui-ux-pro-max-sync
@@ -14,6 +20,7 @@ permissions:
 
 jobs:
   sync:
+    if: github.actor != 'PEFY-GG Capability Bot'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
