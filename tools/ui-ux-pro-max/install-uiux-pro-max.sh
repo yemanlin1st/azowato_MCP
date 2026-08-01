@@ -5,11 +5,6 @@ umask 077
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$ROOT"
 
-LOCK="capabilities/ui-ux-pro-max.lock.json"
-PACKAGE="$(python3 -c 'import json; print(json.load(open("capabilities/ui-ux-pro-max.lock.json"))["npm_package"])')"
-VERSION="$(python3 -c 'import json; print(json.load(open("capabilities/ui-ux-pro-max.lock.json"))["npm_version_pinned"])')"
-SPEC="${PACKAGE}@${VERSION}"
-
 for command_name in node npm python3 git; do
   command -v "$command_name" >/dev/null 2>&1 || {
     echo "Required command missing: $command_name" >&2
@@ -17,12 +12,23 @@ for command_name in node npm python3 git; do
   }
 done
 
+LOCK="capabilities/ui-ux-pro-max.lock.json"
+PACKAGE="$(python3 -c 'import json; print(json.load(open("capabilities/ui-ux-pro-max.lock.json"))["npm_package"])')"
+VERSION="$(python3 -c 'import json; print(json.load(open("capabilities/ui-ux-pro-max.lock.json"))["npm_version_pinned"])')"
+SPEC="${PACKAGE}@${VERSION}"
+
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 BACKUP=".pefy/backups/ui-ux-pro-max/$(date -u +%Y%m%dT%H%M%SZ)"
-mkdir -p "$BACKUP" .pefy/evidence
+mkdir -p "$BACKUP" .pefy/evidence "$TMP_DIR/codex" "$TMP_DIR/copilot"
 
-for path in .codex/skills/ui-ux-pro-max .github/prompts/ui-ux-pro-max.prompt.md design-system; do
+TARGETS=(
+  ".agents/skills/ui-ux-pro-max"
+  ".github/prompts/ui-ux-pro-max.prompt.md"
+  ".github/prompts/ui-ux-pro-max"
+  "design-system"
+)
+for path in "${TARGETS[@]}"; do
   if [ -e "$path" ]; then
     mkdir -p "$BACKUP/$(dirname "$path")"
     cp -a "$path" "$BACKUP/$path"
@@ -34,7 +40,7 @@ export npm_config_audit=false
 export npm_config_fund=false
 export npm_config_ignore_scripts=true
 
-# Capture registry provenance before execution and reject version drift.
+# Capture registry provenance before execution and reject package/version drift.
 npm view "$SPEC" name version license dist.integrity dist.shasum repository.url --json > "$TMP_DIR/npm-metadata.json"
 python3 - "$TMP_DIR/npm-metadata.json" "$PACKAGE" "$VERSION" <<'PY'
 import json, sys
@@ -42,15 +48,38 @@ path, expected_name, expected_version = sys.argv[1:]
 data = json.load(open(path, encoding="utf-8"))
 if data.get("name") != expected_name or data.get("version") != expected_version:
     raise SystemExit(f"Registry drift: {data.get('name')}@{data.get('version')}")
-if not data.get("dist.integrity") and not data.get("dist", {}).get("integrity"):
+dist = data.get("dist", {}) if isinstance(data.get("dist"), dict) else {}
+if not data.get("dist.integrity") and not dist.get("integrity"):
     raise SystemExit("Registry integrity metadata missing")
 PY
 
-# Exact package, no global mutation. Template mode uses assets bundled in the pinned npm package.
-env -u GITHUB_TOKEN -u UI_PRO_MAX_GITHUB_TOKEN \
-  npm exec --yes --ignore-scripts --package="$SPEC" -- uipro init --ai codex --force
-env -u GITHUB_TOKEN -u UI_PRO_MAX_GITHUB_TOKEN \
-  npm exec --yes --ignore-scripts --package="$SPEC" -- uipro init --ai copilot --force
+# Generate into isolated staging directories. Only the requested UI/UX Pro Max
+# assets are promoted, preventing bundled sibling skills from overwriting other
+# repository capabilities.
+(
+  cd "$TMP_DIR/codex"
+  env -u GITHUB_TOKEN -u UI_PRO_MAX_GITHUB_TOKEN \
+    npm exec --yes --ignore-scripts --package="$SPEC" -- uipro init --ai codex --force
+)
+(
+  cd "$TMP_DIR/copilot"
+  env -u GITHUB_TOKEN -u UI_PRO_MAX_GITHUB_TOKEN \
+    npm exec --yes --ignore-scripts --package="$SPEC" -- uipro init --ai copilot --force
+)
+
+STAGED_CODEX="$TMP_DIR/codex/.agents/skills/ui-ux-pro-max"
+STAGED_PROMPT="$TMP_DIR/copilot/.github/prompts/ui-ux-pro-max.prompt.md"
+STAGED_COPILOT="$TMP_DIR/copilot/.github/prompts/ui-ux-pro-max"
+for path in "$STAGED_CODEX/SKILL.md" "$STAGED_CODEX/scripts/search.py" "$STAGED_PROMPT" "$STAGED_COPILOT/scripts/search.py"; do
+  [ -f "$path" ] || { echo "Staged asset missing: $path" >&2; exit 20; }
+done
+
+rm -rf .agents/skills/ui-ux-pro-max .github/prompts/ui-ux-pro-max
+rm -f .github/prompts/ui-ux-pro-max.prompt.md
+mkdir -p .agents/skills .github/prompts
+cp -a "$STAGED_CODEX" .agents/skills/ui-ux-pro-max
+cp -a "$STAGED_PROMPT" .github/prompts/ui-ux-pro-max.prompt.md
+cp -a "$STAGED_COPILOT" .github/prompts/ui-ux-pro-max
 
 python3 tools/ui-ux-pro-max/apply-pefy-governance.py
 python3 tools/ui-ux-pro-max/validate-uiux-pro-max.py
@@ -68,8 +97,9 @@ report = {
     'lock': lock,
     'npm_registry_metadata': metadata,
     'validation_summary': {
-        'csv_files': validation['csv_files'],
-        'python_files': validation['python_files'],
+        'codex_csv_files': validation['codex_csv_files'],
+        'copilot_csv_files': validation['copilot_csv_files'],
+        'python_files_compiled': validation['python_files_compiled'],
         'scanned_text_files': validation['scanned_text_files'],
     },
     'installer_sha256': hashlib.sha256(Path('tools/ui-ux-pro-max/install-uiux-pro-max.sh').read_bytes()).hexdigest(),
