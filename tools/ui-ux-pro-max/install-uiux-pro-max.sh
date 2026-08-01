@@ -40,7 +40,6 @@ export npm_config_audit=false
 export npm_config_fund=false
 export npm_config_ignore_scripts=true
 
-# Capture registry provenance before execution and reject package/version drift.
 npm view "$SPEC" name version license dist.integrity dist.shasum repository.url --json > "$TMP_DIR/npm-metadata.json"
 python3 - "$TMP_DIR/npm-metadata.json" "$PACKAGE" "$VERSION" <<'PY'
 import json, sys
@@ -53,9 +52,6 @@ if not data.get("dist.integrity") and not dist.get("integrity"):
     raise SystemExit("Registry integrity metadata missing")
 PY
 
-# Generate into isolated staging directories. Only the requested UI/UX Pro Max
-# assets are promoted, preventing bundled sibling skills from overwriting other
-# repository capabilities.
 (
   cd "$TMP_DIR/codex"
   env -u GITHUB_TOKEN -u UI_PRO_MAX_GITHUB_TOKEN \
@@ -68,8 +64,8 @@ PY
 )
 
 STAGED_CODEX="$TMP_DIR/codex/.agents/skills/ui-ux-pro-max"
-STAGED_PROMPT="$TMP_DIR/copilot/.github/prompts/ui-ux-pro-max.prompt.md"
 STAGED_COPILOT="$TMP_DIR/copilot/.github/prompts/ui-ux-pro-max"
+STAGED_PROMPT="$STAGED_COPILOT/PROMPT.md"
 for path in "$STAGED_CODEX/SKILL.md" "$STAGED_CODEX/scripts/search.py" "$STAGED_PROMPT" "$STAGED_COPILOT/scripts/search.py"; do
   [ -f "$path" ] || { echo "Staged asset missing: $path" >&2; exit 20; }
 done
@@ -78,8 +74,8 @@ rm -rf .agents/skills/ui-ux-pro-max .github/prompts/ui-ux-pro-max
 rm -f .github/prompts/ui-ux-pro-max.prompt.md
 mkdir -p .agents/skills .github/prompts
 cp -a "$STAGED_CODEX" .agents/skills/ui-ux-pro-max
-cp -a "$STAGED_PROMPT" .github/prompts/ui-ux-pro-max.prompt.md
 cp -a "$STAGED_COPILOT" .github/prompts/ui-ux-pro-max
+cp -a "$STAGED_PROMPT" .github/prompts/ui-ux-pro-max.prompt.md
 
 python3 tools/ui-ux-pro-max/apply-pefy-governance.py
 python3 tools/ui-ux-pro-max/validate-uiux-pro-max.py

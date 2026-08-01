@@ -9,7 +9,7 @@
     "skill_json_version": "2.11.0",
     "cli_source_package_json_version": "2.5.0",
     "license": "MIT",
-    "note": "The official v2.12.0 tag contains inconsistent internal version labels. The executable npm artifact is therefore pinned and independently validated instead of inferred from those labels."
+    "note": "The official v2.12.0 tag contains inconsistent internal version labels. The executable npm artifact is pinned and independently validated instead of inferred from those labels."
   },
   "npm_package": "ui-ux-pro-max-cli",
   "npm_version_pinned": "2.11.3",
@@ -21,8 +21,9 @@
   ],
   "canonical_installation_paths": {
     "codex_skill": ".agents/skills/ui-ux-pro-max/",
-    "copilot_prompt": ".github/prompts/ui-ux-pro-max.prompt.md",
-    "copilot_assets": ".github/prompts/ui-ux-pro-max/"
+    "copilot_official_prompt": ".github/prompts/ui-ux-pro-max/PROMPT.md",
+    "copilot_assets": ".github/prompts/ui-ux-pro-max/",
+    "copilot_compatibility_prompt": ".github/prompts/ui-ux-pro-max.prompt.md"
   },
   "obsolete_path_removed": ".codex/skills/ui-ux-pro-max/",
   "workflow": ".github/workflows/ui-ux-pro-max-sync.yml",
@@ -40,6 +41,7 @@
     "isolated staging before promotion",
     "bundled sibling skills not promoted",
     "GitHub workflow token removed from installer process",
+    "official Copilot prompt retained plus compatibility prompt",
     "generated file hashes and evidence",
     "Python compilation and functional smoke tests"
   ],
