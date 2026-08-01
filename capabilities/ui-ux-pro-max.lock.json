@@ -1,0 +1,34 @@
+{
+  "capability_id": "ui-ux-pro-max",
+  "display_name": "UI/UX Pro Max",
+  "status": "installed-governed",
+  "authority": "advisory-design-intelligence",
+  "upstream_repository": "nextlevelbuilder/ui-ux-pro-max-skill",
+  "upstream_release_observed": "v2.12.0",
+  "npm_package": "ui-ux-pro-max-cli",
+  "npm_version_pinned": "2.11.3",
+  "platforms_enabled": [
+    "codex",
+    "github-copilot"
+  ],
+  "installation_paths": [
+    ".codex/skills/ui-ux-pro-max/",
+    ".github/prompts/ui-ux-pro-max.prompt.md"
+  ],
+  "workflow": ".github/workflows/ui-ux-pro-max-sync.yml",
+  "installer": "tools/ui-ux-pro-max/install-uiux-pro-max.sh",
+  "risk_tier": "T2",
+  "network_behavior": "installer accesses npm; generated Python search uses standard library and local data",
+  "release_authority": false,
+  "mandatory_gates": [
+    "PEFY-GG brand",
+    "WCAG AA accessibility",
+    "Impeccable QA",
+    "security and privacy",
+    "tests and evidence",
+    "human approval before publish or deploy"
+  ],
+  "rollback": "restore .pefy/backups/ui-ux-pro-max/<timestamp> or revert installation commits",
+  "kill_switch": "disable ui-ux-pro-max-sync workflow and remove generated skill directories",
+  "review_rule": "upgrade only after package/version alignment and smoke validation"
+}
