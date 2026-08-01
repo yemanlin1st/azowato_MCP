@@ -12,51 +12,76 @@ on:
       - ".github/workflows/ui-ux-pro-max-sync.yml"
 
 concurrency:
-  group: ui-ux-pro-max-sync
-  cancel-in-progress: false
+  group: ui-ux-pro-max-sync-main
+  cancel-in-progress: true
 
 permissions:
   contents: write
 
 jobs:
   sync:
-    if: github.actor != 'PEFY-GG Capability Bot'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: true
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
+          registry-url: "https://registry.npmjs.org"
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install and validate UI UX Pro Max
+      - name: Install and validate pinned UI UX Pro Max
+        shell: bash
         run: bash tools/ui-ux-pro-max/install-uiux-pro-max.sh
 
-      - name: Guard generated assets
+      - name: Enforce generated-asset gates
         shell: bash
         run: |
+          set -euo pipefail
           test -f .codex/skills/ui-ux-pro-max/SKILL.md
+          test -d .codex/skills/ui-ux-pro-max/data
+          test -d .codex/skills/ui-ux-pro-max/scripts
           test -f .codex/skills/ui-ux-pro-max/scripts/search.py
+          test -f .github/prompts/ui-ux-pro-max.prompt.md
           test -f .pefy/evidence/ui-ux-pro-max-install.json
-          ! grep -RIl --exclude='*.md' -E 'ghp_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}' .codex/skills/ui-ux-pro-max .pefy/evidence
+          test -f .pefy/evidence/ui-ux-pro-max-validation.json
+          grep -q "PEFY-GOVERNANCE-BEGIN" .codex/skills/ui-ux-pro-max/SKILL.md
+          grep -q "PEFY-GOVERNANCE-BEGIN" .github/prompts/ui-ux-pro-max.prompt.md
 
-      - name: Commit controlled refresh
+      - name: Upload installation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-ux-pro-max-evidence-${{ github.run_id }}
+          path: .pefy/evidence/ui-ux-pro-max-*.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Commit controlled generated assets
         shell: bash
         run: |
-          if git diff --quiet -- .codex .github/prompts .pefy/evidence; then
+          set -euo pipefail
+          git config user.name "PEFY-GG Capability Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -- \
+            .codex/skills/ui-ux-pro-max \
+            .github/prompts/ui-ux-pro-max.prompt.md \
+            .pefy/evidence/ui-ux-pro-max-install.json \
+            .pefy/evidence/ui-ux-pro-max-validation.json
+          if git diff --cached --quiet; then
             echo "No generated changes."
             exit 0
           fi
-          git config user.name "PEFY-GG Capability Bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add .codex .github/prompts .pefy/evidence
-          git commit -m "chore: refresh UI UX Pro Max generated assets"
-          git push
+          git commit -m "chore(uiux): refresh validated UI UX Pro Max assets [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
