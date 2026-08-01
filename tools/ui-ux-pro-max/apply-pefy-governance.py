@@ -51,9 +51,12 @@ def apply(path: Path, block: str) -> None:
 
 def main() -> None:
     codex_skill = Path(".agents/skills/ui-ux-pro-max/SKILL.md")
-    copilot_prompt = Path(".github/prompts/ui-ux-pro-max.prompt.md")
+    copilot_official = Path(".github/prompts/ui-ux-pro-max/PROMPT.md")
+    copilot_compatibility = Path(".github/prompts/ui-ux-pro-max.prompt.md")
+
     apply(codex_skill, SKILL_BLOCK)
-    apply(copilot_prompt, PROMPT_BLOCK)
+    apply(copilot_official, PROMPT_BLOCK)
+    apply(copilot_compatibility, PROMPT_BLOCK)
 
     governance = codex_skill.parent / "PEFY_GOVERNANCE.md"
     governance.write_text(
