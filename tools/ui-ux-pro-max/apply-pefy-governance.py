@@ -50,9 +50,12 @@ def apply(path: Path, block: str) -> None:
 
 
 def main() -> None:
-    apply(Path(".codex/skills/ui-ux-pro-max/SKILL.md"), SKILL_BLOCK)
-    apply(Path(".github/prompts/ui-ux-pro-max.prompt.md"), PROMPT_BLOCK)
-    governance = Path(".codex/skills/ui-ux-pro-max/PEFY_GOVERNANCE.md")
+    codex_skill = Path(".agents/skills/ui-ux-pro-max/SKILL.md")
+    copilot_prompt = Path(".github/prompts/ui-ux-pro-max.prompt.md")
+    apply(codex_skill, SKILL_BLOCK)
+    apply(copilot_prompt, PROMPT_BLOCK)
+
+    governance = codex_skill.parent / "PEFY_GOVERNANCE.md"
     governance.write_text(
         "# PEFY-GG Governance Overlay\n\n"
         "This installed upstream capability is advisory. PEFY-GG brand, accessibility, security, privacy, IP, Impeccable QA, evidence, rollback and human release gates remain authoritative.\n",
