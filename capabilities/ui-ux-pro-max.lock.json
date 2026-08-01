@@ -4,9 +4,17 @@
   "status": "installed-governed",
   "authority": "advisory-design-intelligence",
   "upstream_repository": "nextlevelbuilder/ui-ux-pro-max-skill",
-  "upstream_release_observed": "v2.12.0",
+  "upstream_release_tag_observed": "v2.12.0",
+  "upstream_release_metadata": {
+    "skill_json_version": "2.11.0",
+    "cli_source_package_json_version": "2.5.0",
+    "license": "MIT",
+    "note": "The official v2.12.0 tag contains inconsistent internal version labels. The executable npm artifact is therefore pinned and independently validated instead of inferred from those labels."
+  },
   "npm_package": "ui-ux-pro-max-cli",
   "npm_version_pinned": "2.11.3",
+  "installation_method": "npm exec with exact package version and bundled template generation",
+  "global_installation": false,
   "platforms_enabled": [
     "codex",
     "github-copilot"
@@ -17,18 +25,31 @@
   ],
   "workflow": ".github/workflows/ui-ux-pro-max-sync.yml",
   "installer": "tools/ui-ux-pro-max/install-uiux-pro-max.sh",
-  "risk_tier": "T2",
-  "network_behavior": "installer accesses npm; generated Python search uses standard library and local data",
+  "validator": "tools/ui-ux-pro-max/validate-uiux-pro-max.py",
+  "governance_overlay": "tools/ui-ux-pro-max/apply-pefy-governance.py",
+  "risk_tier": "T3",
+  "network_behavior": "The installer contacts the npm registry for the exact pinned package. The generated Python search engine uses local data and the Python standard library.",
+  "supply_chain_controls": [
+    "exact npm version",
+    "registry name and version verification",
+    "registry integrity metadata required",
+    "npm lifecycle scripts disabled",
+    "no global npm mutation",
+    "GitHub workflow token removed from the installer process",
+    "generated file hashes and evidence",
+    "Python compilation and functional smoke tests"
+  ],
   "release_authority": false,
   "mandatory_gates": [
-    "PEFY-GG brand",
-    "WCAG AA accessibility",
+    "PEFY-GG brand and product architecture",
+    "WCAG AA accessibility and inclusion",
     "Impeccable QA",
-    "security and privacy",
+    "security, privacy and legal/IP",
+    "responsive and state validation",
     "tests and evidence",
-    "human approval before publish or deploy"
+    "human approval before publish, merge or deploy"
   ],
-  "rollback": "restore .pefy/backups/ui-ux-pro-max/<timestamp> or revert installation commits",
-  "kill_switch": "disable ui-ux-pro-max-sync workflow and remove generated skill directories",
-  "review_rule": "upgrade only after package/version alignment and smoke validation"
+  "rollback": "restore .pefy/backups/ui-ux-pro-max/<timestamp> or revert the installation commits",
+  "kill_switch": "disable the UI UX Pro Max Sync workflow and revert/remove generated capability files",
+  "upgrade_rule": "change npm_version_pinned only after provenance review, integrity verification and successful validation in a controlled branch"
 }
