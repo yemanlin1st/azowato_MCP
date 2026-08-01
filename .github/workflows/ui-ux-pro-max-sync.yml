@@ -48,14 +48,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f .codex/skills/ui-ux-pro-max/SKILL.md
-          test -d .codex/skills/ui-ux-pro-max/data
-          test -d .codex/skills/ui-ux-pro-max/scripts
-          test -f .codex/skills/ui-ux-pro-max/scripts/search.py
+          test -f .agents/skills/ui-ux-pro-max/SKILL.md
+          test -d .agents/skills/ui-ux-pro-max/data
+          test -d .agents/skills/ui-ux-pro-max/scripts
+          test -f .agents/skills/ui-ux-pro-max/scripts/search.py
           test -f .github/prompts/ui-ux-pro-max.prompt.md
+          test -d .github/prompts/ui-ux-pro-max/data
+          test -d .github/prompts/ui-ux-pro-max/scripts
+          test -f .github/prompts/ui-ux-pro-max/scripts/search.py
           test -f .pefy/evidence/ui-ux-pro-max-install.json
           test -f .pefy/evidence/ui-ux-pro-max-validation.json
-          grep -q "PEFY-GOVERNANCE-BEGIN" .codex/skills/ui-ux-pro-max/SKILL.md
+          grep -q "PEFY-GOVERNANCE-BEGIN" .agents/skills/ui-ux-pro-max/SKILL.md
           grep -q "PEFY-GOVERNANCE-BEGIN" .github/prompts/ui-ux-pro-max.prompt.md
 
       - name: Upload installation evidence
@@ -74,8 +77,9 @@ jobs:
           git config user.name "PEFY-GG Capability Bot"
           git config user.email "actions@users.noreply.github.com"
           git add -- \
-            .codex/skills/ui-ux-pro-max \
+            .agents/skills/ui-ux-pro-max \
             .github/prompts/ui-ux-pro-max.prompt.md \
+            .github/prompts/ui-ux-pro-max \
             .pefy/evidence/ui-ux-pro-max-install.json \
             .pefy/evidence/ui-ux-pro-max-validation.json
           if git diff --cached --quiet; then
