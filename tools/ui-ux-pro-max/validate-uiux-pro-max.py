@@ -13,7 +13,8 @@ from pathlib import Path
 ROOT = Path.cwd()
 CODEX = ROOT / ".agents/skills/ui-ux-pro-max"
 COPILOT = ROOT / ".github/prompts/ui-ux-pro-max"
-PROMPT = ROOT / ".github/prompts/ui-ux-pro-max.prompt.md"
+COPILOT_OFFICIAL = COPILOT / "PROMPT.md"
+COPILOT_COMPATIBILITY = ROOT / ".github/prompts/ui-ux-pro-max.prompt.md"
 EVIDENCE = ROOT / ".pefy/evidence/ui-ux-pro-max-validation.json"
 SECRET_RE = re.compile(
     r"(?:ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9]{20,}|"
@@ -58,7 +59,8 @@ def main() -> None:
         CODEX / "SKILL.md",
         CODEX / "scripts/search.py",
         COPILOT / "scripts/search.py",
-        PROMPT,
+        COPILOT_OFFICIAL,
+        COPILOT_COMPATIBILITY,
     ]
     for path in required_files:
         if not path.is_file():
@@ -70,11 +72,11 @@ def main() -> None:
     for path in sorted(set(codex_py + copilot_py)):
         py_compile.compile(str(path), doraise=True)
 
-    skill_text = (CODEX / "SKILL.md").read_text(encoding="utf-8")
-    prompt_text = PROMPT.read_text(encoding="utf-8")
-    for label, text in [("Codex skill", skill_text), ("Copilot prompt", prompt_text)]:
+    governed_files = [CODEX / "SKILL.md", COPILOT_OFFICIAL, COPILOT_COMPATIBILITY]
+    for path in governed_files:
+        text = path.read_text(encoding="utf-8")
         if "PEFY-GOVERNANCE-BEGIN" not in text or "PEFY-GOVERNANCE-END" not in text:
-            fail(f"Missing governed overlay in {label}")
+            fail(f"Missing governed overlay in {path}")
 
     search = CODEX / "scripts/search.py"
     smoke = [
@@ -89,7 +91,7 @@ def main() -> None:
         if result["returncode"] != 0 or not result["stdout_tail"].strip():
             fail(f"Smoke test failed: {json.dumps(result, indent=2)}")
 
-    scan_roots = [CODEX, COPILOT, PROMPT]
+    scan_roots = [CODEX, COPILOT, COPILOT_COMPATIBILITY]
     scanned: list[str] = []
     for base in scan_roots:
         paths = sorted(base.rglob("*")) if base.is_dir() else [base]
@@ -105,7 +107,7 @@ def main() -> None:
             scanned.append(str(path.relative_to(ROOT)))
 
     hashes = []
-    hash_paths = sorted(CODEX.rglob("*")) + sorted(COPILOT.rglob("*")) + [PROMPT]
+    hash_paths = sorted(CODEX.rglob("*")) + sorted(COPILOT.rglob("*")) + [COPILOT_COMPATIBILITY]
     for path in hash_paths:
         if path.is_file():
             hashes.append(
@@ -121,7 +123,8 @@ def main() -> None:
         "validated_at_utc": datetime.now(timezone.utc).isoformat(),
         "canonical_paths": {
             "codex": str(CODEX.relative_to(ROOT)),
-            "copilot_prompt": str(PROMPT.relative_to(ROOT)),
+            "copilot_official_prompt": str(COPILOT_OFFICIAL.relative_to(ROOT)),
+            "copilot_compatibility_prompt": str(COPILOT_COMPATIBILITY.relative_to(ROOT)),
             "copilot_assets": str(COPILOT.relative_to(ROOT)),
         },
         "codex_csv_files": len(codex_csv),
