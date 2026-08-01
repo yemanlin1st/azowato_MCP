@@ -1,0 +1,83 @@
+name: PEFY Automated Rollback Guard
+
+on:
+  deployment_status:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "observe or execute"
+        required: true
+        default: "observe"
+        type: choice
+        options: [observe, execute]
+      health_url:
+        description: "Production health endpoint"
+        required: false
+        default: "https://pefy-experience-media-mcp.vercel.app/api/health"
+
+concurrency:
+  group: pefy-automated-rollback-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  deployments: read
+  actions: read
+
+jobs:
+  guard:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
+      github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment: production
+    env:
+      PEFY_AUTOMATED_ROLLBACKS_MODE: ${{ inputs.mode || vars.PEFY_AUTOMATED_ROLLBACKS_MODE || 'observe' }}
+      PEFY_AUTOMATED_ROLLBACKS_DISABLED: ${{ vars.PEFY_AUTOMATED_ROLLBACKS_DISABLED || 'false' }}
+      PEFY_HEALTH_URL: ${{ inputs.health_url || vars.PEFY_HEALTH_URL || 'https://pefy-experience-media-mcp.vercel.app/api/health' }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_SCOPE: ${{ vars.VERCEL_SCOPE }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Pin Vercel CLI
+        run: npm install --global vercel@58.1.0
+
+      - name: Detect changed files
+        shell: bash
+        run: |
+          if git rev-parse HEAD^ >/dev/null 2>&1; then
+            {
+              echo 'PEFY_CHANGED_FILES<<EOF'
+              git diff --name-only HEAD^ HEAD
+              echo 'EOF'
+            } >> "$GITHUB_ENV"
+          fi
+
+      - name: Run governed rollback guard
+        run: python scripts/rollback_guard.py
+
+      - name: Upload rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pefy-rollback-evidence-${{ github.run_id }}
+          path: evidence/*.json
+          if-no-files-found: warn
+          retention-days: 90
