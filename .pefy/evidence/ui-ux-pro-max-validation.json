@@ -1,6 +1,6 @@
 {
   "status": "validated",
-  "validated_at_utc": "2026-08-01T14:39:46.313352+00:00",
+  "validated_at_utc": "2026-08-01T14:41:18.949597+00:00",
   "canonical_paths": {
     "codex": ".agents/skills/ui-ux-pro-max",
     "copilot_official_prompt": ".github/prompts/ui-ux-pro-max/PROMPT.md",
@@ -243,22 +243,22 @@
     {
       "path": ".agents/skills/ui-ux-pro-max/scripts/__pycache__/core.cpython-312.pyc",
       "size": 19571,
-      "sha256": "cc809b813830f6e236a914f0a57afda8f8a1806aece91216d68c87e0c61ac483"
+      "sha256": "c76a268575be5431f6eb0af4a19423b85d1a4fd49ccadbe41ae3328d34a60ddf"
     },
     {
       "path": ".agents/skills/ui-ux-pro-max/scripts/__pycache__/design_system.cpython-312.pyc",
       "size": 73122,
-      "sha256": "37ebebf4d6756df04113e72dc87823584a72bc397de73d6476a7fbb87ffa8a68"
+      "sha256": "a729025d31cda201c976f96b0d201e83ceecf0981d6c0fe72d1605c061799d36"
     },
     {
       "path": ".agents/skills/ui-ux-pro-max/scripts/__pycache__/search.cpython-312.pyc",
       "size": 10554,
-      "sha256": "99bc64ed1aada79cf15098fdcee2390c63e595a84b7429d9f1dfc581717e76a7"
+      "sha256": "94826c76a2c9c940b2eca02bd5083c26ac8cfb6a09bebd2ea18cb449650b0a73"
     },
     {
       "path": ".agents/skills/ui-ux-pro-max/scripts/__pycache__/validate_data.cpython-312.pyc",
       "size": 5359,
-      "sha256": "3b4128044e0bb45414a424ed62285e78848f6ffed9c771f19b620bca61f51a1f"
+      "sha256": "f23bc1dbe9540ad9d9d13248c1498a33590abee88d0b78e6c489b810fe3a0741"
     },
     {
       "path": ".agents/skills/ui-ux-pro-max/scripts/core.py",
@@ -278,7 +278,7 @@
     {
       "path": ".agents/skills/ui-ux-pro-max/scripts/tests/__pycache__/test_core.cpython-312.pyc",
       "size": 10389,
-      "sha256": "960d463db86e0e3e83dc8f5b196bc40f3434ea2e60aad3f3262750f96ee363f3"
+      "sha256": "a1fac676f929b260b5f9edb3cf968edba8d51bc8bbec1baab68be546269a38ea"
     },
     {
       "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
@@ -473,22 +473,22 @@
     {
       "path": ".github/prompts/ui-ux-pro-max/scripts/__pycache__/core.cpython-312.pyc",
       "size": 19572,
-      "sha256": "c094ab2381ef2a07a072703eebf8b817df4aa81b10b09db95db7940232781d1b"
+      "sha256": "4c11bcd85ef822bb8c3efae6190f62317fe27fbf3de8bd759fdc40d059d80e25"
     },
     {
       "path": ".github/prompts/ui-ux-pro-max/scripts/__pycache__/design_system.cpython-312.pyc",
       "size": 73123,
-      "sha256": "7a4d3ca6fb3d2205a8a1bb71148b987e614828cbac25826232b3fd1d61e27d2f"
+      "sha256": "7583a9c2457c19ef7f086b59af6db9b7df95d41842babfbe3512d70b96fd3509"
     },
     {
       "path": ".github/prompts/ui-ux-pro-max/scripts/__pycache__/search.cpython-312.pyc",
       "size": 10555,
-      "sha256": "2885fd8910bcbf7fa6aa7dd3ed2fbf854996736d8ab9f37b51e83802d9b4068f"
+      "sha256": "9056998f3caaa4021318e56509a3ddabbd22236ed5c8a9c0d6e72d72016d455e"
     },
     {
       "path": ".github/prompts/ui-ux-pro-max/scripts/__pycache__/validate_data.cpython-312.pyc",
       "size": 5360,
-      "sha256": "4d7c40ce9f88af13fff8cf4ac6012b61c37a5d3c3f651fee25e2ed7dbb2fd4d2"
+      "sha256": "154ee69bf921466de3e6ecce3c47d97356fa9068f2cfcdd6f9ba6cdc740340f5"
     },
     {
       "path": ".github/prompts/ui-ux-pro-max/scripts/core.py",
@@ -508,7 +508,7 @@
     {
       "path": ".github/prompts/ui-ux-pro-max/scripts/tests/__pycache__/test_core.cpython-312.pyc",
       "size": 10390,
-      "sha256": "1e4ff21836980c127aa96ac5db5afd3821c443cca927e6ed713d6cb8948f655c"
+      "sha256": "0d6718b50b97cda45a800c158a9e681c8ac99086174f326bff58063237e64c8b"
     },
     {
       "path": ".github/prompts/ui-ux-pro-max/scripts/tests/test_core.py",
