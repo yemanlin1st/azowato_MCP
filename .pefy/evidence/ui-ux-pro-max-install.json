@@ -1,0 +1,77 @@
+{
+  "status": "installed-and-validated",
+  "installed_at_utc": "2026-08-01T14:38:43.132807+00:00",
+  "lock": {
+    "capability_id": "ui-ux-pro-max",
+    "display_name": "UI/UX Pro Max",
+    "status": "installed-governed",
+    "authority": "advisory-design-intelligence",
+    "upstream_repository": "nextlevelbuilder/ui-ux-pro-max-skill",
+    "upstream_release_tag_observed": "v2.12.0",
+    "upstream_release_metadata": {
+      "skill_json_version": "2.11.0",
+      "cli_source_package_json_version": "2.5.0",
+      "license": "MIT",
+      "note": "The official v2.12.0 tag contains inconsistent internal version labels. The executable npm artifact is therefore pinned and independently validated instead of inferred from those labels."
+    },
+    "npm_package": "ui-ux-pro-max-cli",
+    "npm_version_pinned": "2.11.3",
+    "installation_method": "isolated npm-exec staging with exact package version; only canonical UI/UX Pro Max assets are promoted",
+    "global_installation": false,
+    "platforms_enabled": [
+      "codex",
+      "github-copilot"
+    ],
+    "canonical_installation_paths": {
+      "codex_skill": ".agents/skills/ui-ux-pro-max/",
+      "copilot_prompt": ".github/prompts/ui-ux-pro-max.prompt.md",
+      "copilot_assets": ".github/prompts/ui-ux-pro-max/"
+    },
+    "obsolete_path_removed": ".codex/skills/ui-ux-pro-max/",
+    "workflow": ".github/workflows/ui-ux-pro-max-sync.yml",
+    "installer": "tools/ui-ux-pro-max/install-uiux-pro-max.sh",
+    "validator": "tools/ui-ux-pro-max/validate-uiux-pro-max.py",
+    "governance_overlay": "tools/ui-ux-pro-max/apply-pefy-governance.py",
+    "risk_tier": "T3",
+    "network_behavior": "The installer contacts the npm registry for the exact pinned package. Generated search engines use local data and Python standard-library code.",
+    "supply_chain_controls": [
+      "exact npm version",
+      "registry name and version verification",
+      "registry integrity metadata required",
+      "npm lifecycle scripts disabled",
+      "no global npm mutation",
+      "isolated staging before promotion",
+      "bundled sibling skills not promoted",
+      "GitHub workflow token removed from installer process",
+      "generated file hashes and evidence",
+      "Python compilation and functional smoke tests"
+    ],
+    "release_authority": false,
+    "mandatory_gates": [
+      "PEFY-GG brand and product architecture",
+      "WCAG AA accessibility and inclusion",
+      "Impeccable QA",
+      "security, privacy and legal/IP",
+      "responsive and state validation",
+      "tests and evidence",
+      "human approval before publish, merge or deploy"
+    ],
+    "rollback": "restore .pefy/backups/ui-ux-pro-max/<timestamp> or revert the installation commits",
+    "kill_switch": "disable the UI UX Pro Max Sync workflow and revert/remove canonical generated capability files",
+    "upgrade_rule": "change npm_version_pinned only after provenance review, integrity verification and successful validation in a controlled branch"
+  },
+  "npm_registry_metadata": {
+    "name": "ui-ux-pro-max-cli",
+    "version": "2.11.3",
+    "license": "MIT",
+    "dist.integrity": "sha512-tg6ABZP/L4rUlJGCfUYWnRdrkMiPI1oEKmWG9SeICRVkO7CFFfB11cEiNoW8s5wRHnquZhqbo40x/yCgSxSAGg==",
+    "dist.shasum": "5410d913edad43f8b632feb854b94b099f7b71f3"
+  },
+  "validation_summary": {
+    "codex_csv_files": 35,
+    "copilot_csv_files": 35,
+    "python_files_compiled": 10,
+    "scanned_text_files": 84
+  },
+  "installer_sha256": "0044c95b581ef7e206251c169f4d3c7f533c126ec0d7f025d3319e1f041a9b66"
+}

@@ -1,0 +1,528 @@
+{
+  "status": "validated",
+  "validated_at_utc": "2026-08-01T14:38:43.099668+00:00",
+  "canonical_paths": {
+    "codex": ".agents/skills/ui-ux-pro-max",
+    "copilot_prompt": ".github/prompts/ui-ux-pro-max.prompt.md",
+    "copilot_assets": ".github/prompts/ui-ux-pro-max"
+  },
+  "codex_csv_files": 35,
+  "copilot_csv_files": 35,
+  "python_files_compiled": 10,
+  "scanned_text_files": 84,
+  "smoke_tests": [
+    {
+      "command": [
+        "/opt/hostedtoolcache/Python/3.12.13/x64/bin/python3",
+        "/home/runner/work/azowato_MCP/azowato_MCP/.agents/skills/ui-ux-pro-max/scripts/search.py",
+        "enterprise executive dashboard",
+        "--design-system",
+        "-p",
+        "PEFY-GG Baseline",
+        "-f",
+        "markdown"
+      ],
+      "returncode": 0,
+      "stdout_tail": "## Design System: PEFY-GG Baseline\n\n### Pattern\n- **Name:** Enterprise Gateway\n- **Conversion Focus:** Path selection (I am a...). Mega menu navigation. Trust signals prominent.\n- **CTA Placement:** Contact Sales (Primary) + Login (Secondary)\n- **Color Strategy:** Corporate: Navy/Grey. High integrity. Conservative accents.\n- **Sections:** 1. Hero (Video/Mission), 2. Solutions by Industry, 3. Solutions by Role, 4. Client Logos, 5. Contact Sales\n\n### Style\n- **Name:** Trust & Authority\n- **Mode Support:** Light \u2713 Full | Dark \u2713 Full\n- **Keywords:** Certificates/badges displayed, expert credentials, case studies with metrics, before/after comparisons, industry recognition, security badges\n- **Best For:** Healthcare/medical landing pages, financial services, enterprise software, premium/luxury products, legal services\n- **Performance:** \u26a1 Excellent | **Accessibility:** \u2713 WCAG AAA\n\n### Colors\n| Role | Hex | CSS Variable |\n|------|-----|--------------|\n| Primary | `#0F172A` | `--color-primary` |\n| On Primary | `#FFFFFF` | `--color-on-primary` |\n| Secondary | `#1E293B` | `--color-secondary` |\n| Accent/CTA | `#22C55E` | `--color-accent` |\n| Background | `#020617` | `--color-background` |\n| Foreground | `#F8FAFC` | `--color-foreground` |\n| Muted | `#1A1E2F` | `--color-muted` |\n| Border | `#334155` | `--color-border` |\n| Destructive | `#EF4444` | `--color-destructive` |\n| Ring | `#0F172A` | `--color-ring` |\n\n*Notes: Dark bg + green positive indicators*\n\n### Typography\n- **Heading:** Fira Code\n- **Body:** Fira Sans\n- **Mood:** dashboard, data, analytics, code, technical, precise\n- **Best For:** Dashboards, analytics, data visualization, admin panels\n- **Google Fonts:** https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap\n- **CSS Import:**\n```css\n@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');\n```\n\n### Key Effects\nBadge hover effects, metric pulse animations, certificate carousel, smooth stat reveal\n\n### Avoid (Anti-patterns)\n- Playful design\n- Hidden credentials\n- AI purple/pink gradients\n\n### Pre-Delivery Checklist\n- [ ] No emojis as icons (use SVG: Heroicons/Lucide)\n- [ ] cursor-pointer on all clickable elements\n- [ ] Hover states with smooth transitions (150-300ms)\n- [ ] Light mode: text contrast 4.5:1 minimum\n- [ ] Focus states visible for keyboard nav\n- [ ] prefers-reduced-motion respected\n- [ ] Responsive: 375px, 768px, 1024px, 1440px\n\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "/opt/hostedtoolcache/Python/3.12.13/x64/bin/python3",
+        "/home/runner/work/azowato_MCP/azowato_MCP/.agents/skills/ui-ux-pro-max/scripts/search.py",
+        "accessibility loading forms",
+        "--domain",
+        "ux",
+        "-n",
+        "3"
+      ],
+      "returncode": 0,
+      "stdout_tail": "## UI Pro Max Search Results\n**Domain:** ux | **Query:** accessibility loading forms\n**Source:** ux-guidelines.csv | **Found:** 3 results\n\n### Result 1\n- **Category:** Performance\n- **Issue:** Lazy Loading\n- **Platform:** All\n- **Description:** Load content as needed\n- **Do:** Lazy load below-fold images and content\n- **Don't:** Load everything upfront\n- **Code Example Good:** loading='lazy'\n- **Code Example Bad:** All images eager load\n- **Severity:** Medium\n\n### Result 2\n- **Category:** Animation\n- **Issue:** Loading States\n- **Platform:** All\n- **Description:** Show feedback during async operations\n- **Do:** Use skeleton screens or spinners\n- **Don't:** Leave UI frozen with no feedback\n- **Code Example Good:** animate-pulse skeleton\n- **Code Example Bad:** Blank screen while loading\n- **Severity:** High\n\n### Result 3\n- **Category:** Performance\n- **Issue:** Font Loading\n- **Platform:** Web\n- **Description:** Web fonts can block rendering\n- **Do:** Use font-display swap or optional\n- **Don't:** Invisible text during font load\n- **Code Example Good:** font-display: swap\n- **Code Example Bad:** FOIT (Flash of Invisible Text)\n- **Severity:** Medium\n\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "/opt/hostedtoolcache/Python/3.12.13/x64/bin/python3",
+        "/home/runner/work/azowato_MCP/azowato_MCP/.agents/skills/ui-ux-pro-max/scripts/search.py",
+        "performance navigation",
+        "--stack",
+        "nextjs"
+      ],
+      "returncode": 0,
+      "stdout_tail": "## UI Pro Max Stack Guidelines\n**Stack:** nextjs | **Query:** performance navigation\n**Source:** stacks/nextjs.csv | **Found:** 3 results\n\n### Result 1\n- **Category:** Link\n- **Guideline:** Use next/link for navigation\n- **Description:** Client-side navigation with prefetching\n- **Do:** <Link href=\"\"> for internal links\n- **Don't:** <a> for internal navigation\n- **Code Good:** <Link href=\"/about\">About</Link>\n- **Code Bad:** <a href=\"/about\">About</a>\n- **Severity:** High\n- **Docs URL:** https://nextjs.org/docs/app/api-reference/components/link\n\n### Result 2\n- **Category:** Link\n- **Guideline:** Use scroll option appropriately\n- **Description:** Control scroll behavior on navigation\n- **Do:** scroll={false} for tabs pagination\n- **Don't:** Always scroll to top\n- **Code Good:** <Link scroll={false}>\n- **Code Bad:** Manual scroll management\n- **Severity:** Low\n- **Docs URL:** \n\n### Result 3\n- **Category:** Performance\n- **Guideline:** Avoid layout shifts\n- **Description:** Reserve space for dynamic content\n- **Do:** Skeleton loaders aspect ratios\n- **Don't:** Content popping in\n- **Code Good:** <Skeleton className=\"h-48\"/>\n- **Code Bad:** No placeholder for async content\n- **Severity:** High\n- **Docs URL:** \n\n",
+      "stderr_tail": ""
+    }
+  ],
+  "files": [
+    {
+      "path": ".agents/skills/ui-ux-pro-max/PEFY_GOVERNANCE.md",
+      "size": 211,
+      "sha256": "e55a4478a648fb8699cf5f44696979dd7556035e1b67bc92b75fdc26a6bc29ff"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/SKILL.md",
+      "size": 48181,
+      "sha256": "1a28b5dae3e7946ad93252845e5dd0f833c26956fcd28eeb23611775cfd2260f"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/app-interface.csv",
+      "size": 9743,
+      "sha256": "2a17ef810dab715ce1f339861817a8fbe3ccc38142b70517301e874803e838ac"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/charts.csv",
+      "size": 19365,
+      "sha256": "a70ef7460b0eaaea8614f86a0d09a4bc38b467804179762464b5ca45b491baac"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/colors.csv",
+      "size": 38668,
+      "sha256": "cb26759805217edaaa31b09836aec09eab0fe245c58f5884e9a16ef802c6e26a"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/google-fonts.csv",
+      "size": 743272,
+      "sha256": "3fd2898fb0fdd31ba758bf05cfcd2b58cd0f038a20cf08e417d09e5a8a4a509e"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/icons.csv",
+      "size": 20637,
+      "sha256": "f376c29fb4df37b4bdb366a5aa70cb211ba3dd8b435390aaa03152a64b07d2e8"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/landing.csv",
+      "size": 16685,
+      "sha256": "121a2cac7cf21050234b5f80e7b4e182f10123536032e0f9ad862ad3aec9677d"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/motion.csv",
+      "size": 10500,
+      "sha256": "6452fbd8028ab71d52993775340e1bc40a150d92be8d4b4cb8710620fd1a7512"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/products.csv",
+      "size": 73485,
+      "sha256": "e9749e4fd8f7d4c94919c25ebd347a4adaddb671e7b01d33fbc2c87d447e6667"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "size": 14822,
+      "sha256": "904c8afcda229629545912dde0e8ac37503757131f0169f80b016f1f58c4fd3f"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/angular.csv",
+      "size": 18137,
+      "sha256": "9de35bbda536ced9af7642d88b7675cefa3e18c370ab40c0875f75ab473f0fd6"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/astro.csv",
+      "size": 11870,
+      "sha256": "6b587e32df201b6e5e7b2ed187b65eee8e6d55dcd6cc16bde29fc25e0f911dae"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/avalonia.csv",
+      "size": 25626,
+      "sha256": "6bfa40ec6609fcb59e52a38281edcc3a3e5b5e56341304fe5628b32cb9b1f875"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/flutter.csv",
+      "size": 10416,
+      "sha256": "fe36d404c799781e8ba6e9a8179b45799ed5126a545528550cd2eb0f2346e8c5"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/html-tailwind.csv",
+      "size": 11305,
+      "sha256": "7aef38e75c53559470afcfa91580a9917ca8b7dbf8b92110389e23e93703ac52"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/javafx.csv",
+      "size": 30871,
+      "sha256": "5545e331b2479eb431ca45203799ce1b0ab1e369045ab7735d5a9f85ec78f956"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/jetpack-compose.csv",
+      "size": 8195,
+      "sha256": "6c8fd4b0391c342c12b0af15610cd5becbeccaef0bbe8dcfc01d928c3195d93e"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "size": 18519,
+      "sha256": "3e9f551b5232136f7b5ce1304c5e1bf5a83bd63c0dc02afb37502b238772d145"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "size": 12493,
+      "sha256": "e828ccc04843742f52f545a068e8a9ab0d2b97c0e771f7e93bf0cef74da05554"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxt-ui.csv",
+      "size": 21230,
+      "sha256": "b9972b31e721faabc667ee2b4e93ba2af29e1df86f186c2ff608b68370f0e3a5"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "size": 16539,
+      "sha256": "f7a3f2d9542856d00199f85c6c023b7c284cc698e2e6e12d61afce2edacb24d6"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/react-native.csv",
+      "size": 9983,
+      "sha256": "077aefc81d194895ecf7936b3ed298b978e36961f183e3a275f8acda19b5f621"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/react.csv",
+      "size": 12962,
+      "sha256": "e5624ab41d33427d88e41d07581ce4eca59b37b36ab72a6ad43a9c8e2d0a1c72"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/shadcn.csv",
+      "size": 15921,
+      "sha256": "395c2e415ef6f48a474acccdc8eb2c7258a6ed751a5037ba171a2d8823e02ded"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/svelte.csv",
+      "size": 11009,
+      "sha256": "71af52d64f266c88070b91dbbaa900c2f8074b6baae9f35eaea6ba9cec6fd803"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/swiftui.csv",
+      "size": 10821,
+      "sha256": "c9c2d2510f8e66281a2514e8dd0125a6b653b9ef53a71281b5e7dfe003d5b569"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/threejs.csv",
+      "size": 44860,
+      "sha256": "c74d6ba76021f8d72c0ed12c559caecfeb6961829242acf6bcb9e99926b1a396"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/uno.csv",
+      "size": 27471,
+      "sha256": "5d2e0f396bb9dc5a2661204264cc0eda7cc4fa3d78152dec89d668704a41b8fc"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/uwp.csv",
+      "size": 22867,
+      "sha256": "debf669928871261ced9333788d5afd5784377ea1fa1b4f53993dd8f1574c0fc"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/vue.csv",
+      "size": 11006,
+      "sha256": "c2724915d3c11cd67263f25896cff721f787a0fdd8326002d31e9f5806dfd8f8"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/winui.csv",
+      "size": 25152,
+      "sha256": "2d970b08e44509d7afa53ce7feb446930b2d5e0667fa637df9aeeed65c42bbbe"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/wpf.csv",
+      "size": 22538,
+      "sha256": "ca78b5f28dc50d66900548d602d74856400097284c73e076fcfbb5a38ae5083c"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/styles.csv",
+      "size": 142602,
+      "sha256": "1bf9c1d8484a0a7a54fb67555902380446865b604c8449e47a449cb3d9c1ef88"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/typography.csv",
+      "size": 49830,
+      "sha256": "7abead73de0e43e09544f164cb60cd431674e411f1e063e555a8b44d51273328"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ui-reasoning.csv",
+      "size": 52908,
+      "sha256": "06e4369445388ba9b7a57347510b125b7a2145bbf8546a327ba50292503b204a"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "size": 18667,
+      "sha256": "e01943c433b2cad3040f19389b3b0455673758a569b7a927b5bedf65c989cb96"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/__pycache__/core.cpython-312.pyc",
+      "size": 19571,
+      "sha256": "709f285f4280c7a433258709c72bed0361f59acfd10f08b94c8e325398e81c65"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/__pycache__/design_system.cpython-312.pyc",
+      "size": 73122,
+      "sha256": "11a068ceb29cc8aae4d4a028a98c963472a7a2b6505bb69e26f4e8e2f3e486ad"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/__pycache__/search.cpython-312.pyc",
+      "size": 10554,
+      "sha256": "f75cbc6bdeae787230af85f17ba89dd6826ef53671f4bfdbeab8deb42f26dd09"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/__pycache__/validate_data.cpython-312.pyc",
+      "size": 5359,
+      "sha256": "534b7755e14653384b3dc1b3429a11f1eaea49b39df481d643a624da6c8019e0"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/core.py",
+      "size": 18801,
+      "sha256": "64c149019196ee24647464a27278eb96d3b4638ded73ebfc35ccd2bc99c083a9"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "size": 59417,
+      "sha256": "fcdb279eb9691dffd6c80c333d29a4e5567368e38d724520c60013c8b1aaf242"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/search.py",
+      "size": 8687,
+      "sha256": "69a349d69543f35f45a12c0c82922c550d1b0a16a2b37f6b1406afb2ad2919c8"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/__pycache__/test_core.cpython-312.pyc",
+      "size": 10389,
+      "sha256": "b37e81b2e1e76b8022d2ac8f3c9e0a5c3251d1c4fd194a4e97e9509124f8b8c1"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
+      "size": 5901,
+      "sha256": "ce60ac571164cf35e8c866550ad989fa686706a56fa48df4fdf76444b94fdd8d"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/validate_data.py",
+      "size": 4185,
+      "sha256": "f1b5e0916f3c2f8271416f93f6ff9ebf3311a68a943a19c1b83f16823cbb05a7"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/PROMPT.md",
+      "size": 23024,
+      "sha256": "32119c871fb2f02ce500b855a03269717b936f9634e2530540b29351191cf2df"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/app-interface.csv",
+      "size": 9743,
+      "sha256": "2a17ef810dab715ce1f339861817a8fbe3ccc38142b70517301e874803e838ac"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/charts.csv",
+      "size": 19365,
+      "sha256": "a70ef7460b0eaaea8614f86a0d09a4bc38b467804179762464b5ca45b491baac"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/colors.csv",
+      "size": 38668,
+      "sha256": "cb26759805217edaaa31b09836aec09eab0fe245c58f5884e9a16ef802c6e26a"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/google-fonts.csv",
+      "size": 743272,
+      "sha256": "3fd2898fb0fdd31ba758bf05cfcd2b58cd0f038a20cf08e417d09e5a8a4a509e"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/icons.csv",
+      "size": 20637,
+      "sha256": "f376c29fb4df37b4bdb366a5aa70cb211ba3dd8b435390aaa03152a64b07d2e8"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/landing.csv",
+      "size": 16685,
+      "sha256": "121a2cac7cf21050234b5f80e7b4e182f10123536032e0f9ad862ad3aec9677d"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/motion.csv",
+      "size": 10500,
+      "sha256": "6452fbd8028ab71d52993775340e1bc40a150d92be8d4b4cb8710620fd1a7512"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/products.csv",
+      "size": 73485,
+      "sha256": "e9749e4fd8f7d4c94919c25ebd347a4adaddb671e7b01d33fbc2c87d447e6667"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/react-performance.csv",
+      "size": 14822,
+      "sha256": "904c8afcda229629545912dde0e8ac37503757131f0169f80b016f1f58c4fd3f"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/angular.csv",
+      "size": 18137,
+      "sha256": "9de35bbda536ced9af7642d88b7675cefa3e18c370ab40c0875f75ab473f0fd6"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/astro.csv",
+      "size": 11870,
+      "sha256": "6b587e32df201b6e5e7b2ed187b65eee8e6d55dcd6cc16bde29fc25e0f911dae"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/avalonia.csv",
+      "size": 25626,
+      "sha256": "6bfa40ec6609fcb59e52a38281edcc3a3e5b5e56341304fe5628b32cb9b1f875"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/flutter.csv",
+      "size": 10416,
+      "sha256": "fe36d404c799781e8ba6e9a8179b45799ed5126a545528550cd2eb0f2346e8c5"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/html-tailwind.csv",
+      "size": 11305,
+      "sha256": "7aef38e75c53559470afcfa91580a9917ca8b7dbf8b92110389e23e93703ac52"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/javafx.csv",
+      "size": 30871,
+      "sha256": "5545e331b2479eb431ca45203799ce1b0ab1e369045ab7735d5a9f85ec78f956"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/jetpack-compose.csv",
+      "size": 8195,
+      "sha256": "6c8fd4b0391c342c12b0af15610cd5becbeccaef0bbe8dcfc01d928c3195d93e"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/laravel.csv",
+      "size": 18519,
+      "sha256": "3e9f551b5232136f7b5ce1304c5e1bf5a83bd63c0dc02afb37502b238772d145"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "size": 12493,
+      "sha256": "e828ccc04843742f52f545a068e8a9ab0d2b97c0e771f7e93bf0cef74da05554"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/nuxt-ui.csv",
+      "size": 21230,
+      "sha256": "b9972b31e721faabc667ee2b4e93ba2af29e1df86f186c2ff608b68370f0e3a5"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "size": 16539,
+      "sha256": "f7a3f2d9542856d00199f85c6c023b7c284cc698e2e6e12d61afce2edacb24d6"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/react-native.csv",
+      "size": 9983,
+      "sha256": "077aefc81d194895ecf7936b3ed298b978e36961f183e3a275f8acda19b5f621"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/react.csv",
+      "size": 12962,
+      "sha256": "e5624ab41d33427d88e41d07581ce4eca59b37b36ab72a6ad43a9c8e2d0a1c72"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/shadcn.csv",
+      "size": 15921,
+      "sha256": "395c2e415ef6f48a474acccdc8eb2c7258a6ed751a5037ba171a2d8823e02ded"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/svelte.csv",
+      "size": 11009,
+      "sha256": "71af52d64f266c88070b91dbbaa900c2f8074b6baae9f35eaea6ba9cec6fd803"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/swiftui.csv",
+      "size": 10821,
+      "sha256": "c9c2d2510f8e66281a2514e8dd0125a6b653b9ef53a71281b5e7dfe003d5b569"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/threejs.csv",
+      "size": 44860,
+      "sha256": "c74d6ba76021f8d72c0ed12c559caecfeb6961829242acf6bcb9e99926b1a396"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/uno.csv",
+      "size": 27471,
+      "sha256": "5d2e0f396bb9dc5a2661204264cc0eda7cc4fa3d78152dec89d668704a41b8fc"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/uwp.csv",
+      "size": 22867,
+      "sha256": "debf669928871261ced9333788d5afd5784377ea1fa1b4f53993dd8f1574c0fc"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/vue.csv",
+      "size": 11006,
+      "sha256": "c2724915d3c11cd67263f25896cff721f787a0fdd8326002d31e9f5806dfd8f8"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/winui.csv",
+      "size": 25152,
+      "sha256": "2d970b08e44509d7afa53ce7feb446930b2d5e0667fa637df9aeeed65c42bbbe"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/stacks/wpf.csv",
+      "size": 22538,
+      "sha256": "ca78b5f28dc50d66900548d602d74856400097284c73e076fcfbb5a38ae5083c"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/styles.csv",
+      "size": 142602,
+      "sha256": "1bf9c1d8484a0a7a54fb67555902380446865b604c8449e47a449cb3d9c1ef88"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/typography.csv",
+      "size": 49830,
+      "sha256": "7abead73de0e43e09544f164cb60cd431674e411f1e063e555a8b44d51273328"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/ui-reasoning.csv",
+      "size": 52908,
+      "sha256": "06e4369445388ba9b7a57347510b125b7a2145bbf8546a327ba50292503b204a"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/data/ux-guidelines.csv",
+      "size": 18667,
+      "sha256": "e01943c433b2cad3040f19389b3b0455673758a569b7a927b5bedf65c989cb96"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/scripts/__pycache__/core.cpython-312.pyc",
+      "size": 19572,
+      "sha256": "143f3e5bfcdfa25857afe0088bade525f53bb1cd3e45766aed8463c186517070"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/scripts/__pycache__/design_system.cpython-312.pyc",
+      "size": 73123,
+      "sha256": "3f6c8e2a91f08fe941a1132e4a5b02335c79791153c2822639f125b8d81535e4"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/scripts/__pycache__/search.cpython-312.pyc",
+      "size": 10555,
+      "sha256": "49b348cef39361695a9a52e51ea529e4eba493a3e48a6bde1956ad2d92232189"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/scripts/__pycache__/validate_data.cpython-312.pyc",
+      "size": 5360,
+      "sha256": "d4a3b6a0423955fc863d3a34206cedd6231416a1241549e3962b79a2a2373bc3"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/scripts/core.py",
+      "size": 18801,
+      "sha256": "64c149019196ee24647464a27278eb96d3b4638ded73ebfc35ccd2bc99c083a9"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/scripts/design_system.py",
+      "size": 59417,
+      "sha256": "fcdb279eb9691dffd6c80c333d29a4e5567368e38d724520c60013c8b1aaf242"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/scripts/search.py",
+      "size": 8687,
+      "sha256": "69a349d69543f35f45a12c0c82922c550d1b0a16a2b37f6b1406afb2ad2919c8"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/scripts/tests/__pycache__/test_core.cpython-312.pyc",
+      "size": 10390,
+      "sha256": "dd505792426970315bb33f9e93c1c9a84b80b60a286ded37331a2b202e13e6b1"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/scripts/tests/test_core.py",
+      "size": 5901,
+      "sha256": "ce60ac571164cf35e8c866550ad989fa686706a56fa48df4fdf76444b94fdd8d"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max/scripts/validate_data.py",
+      "size": 4185,
+      "sha256": "f1b5e0916f3c2f8271416f93f6ff9ebf3311a68a943a19c1b83f16823cbb05a7"
+    },
+    {
+      "path": ".github/prompts/ui-ux-pro-max.prompt.md",
+      "size": 23024,
+      "sha256": "32119c871fb2f02ce500b855a03269717b936f9634e2530540b29351191cf2df"
+    }
+  ]
+}
