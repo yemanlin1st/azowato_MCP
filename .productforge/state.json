@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "project_id": "PEFY-EXPERIENCE-MEDIA-MCP",
+  "updated_at": "2026-08-31T12:18:00Z",
+  "mode": "EXECUTE_TO_GATE",
+  "current_stage": "OPERATE_VERIFY",
+  "release_status": "PRODUCTION_DEPLOYMENT_OBSERVED_VERIFYING_CONTROLS",
+  "verified": {
+    "repository_access": true,
+    "vercel_project_found": true,
+    "production_deployment_ready": true,
+    "runtime_error_clusters_last_7d": 0,
+    "health_endpoint_declared": true,
+    "mcp_endpoint_declared": true,
+    "read_only_service_declared": true,
+    "rollback_guard_declared": true,
+    "bearer_auth_supported": true,
+    "bearer_auth_configuration_verified": false
+  },
+  "gaps": [
+    {
+      "id": "PF-EXPMCP-001",
+      "severity": "P1",
+      "domain": "AUTHENTICATION",
+      "title": "MCP_API_KEY / bearer-auth enforcement is supported but its production configuration has not been verified through the available connector",
+      "status": "OPEN"
+    },
+    {
+      "id": "PF-EXPMCP-002",
+      "severity": "P1",
+      "domain": "SUPPLY_CHAIN",
+      "title": "Release provenance/SBOM attestation has not yet been verified",
+      "status": "OPEN"
+    },
+    {
+      "id": "PF-EXPMCP-003",
+      "severity": "P2",
+      "domain": "CATALOG",
+      "title": "Repository and Vercel deployment naming differ and require persistent catalog linkage",
+      "status": "MITIGATED_BY_PRODUCTFORGE_MANIFEST"
+    }
+  ],
+  "next_gate": {
+    "name": "PRODUCTION_CONTROL_VERIFICATION",
+    "requires_human": false,
+    "exit_criteria": [
+      "health endpoint responds successfully",
+      "production auth enforcement state is verified",
+      "logic/type checks pass in an executing environment",
+      "rollback guard observe mode produces valid decision evidence",
+      "release provenance/SBOM evidence is attached or explicitly waived by approved policy"
+    ]
+  }
+}
