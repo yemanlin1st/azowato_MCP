@@ -1,0 +1,59 @@
+schema_version: "1.0"
+productforge_version: "1.0.0-alpha.1"
+project:
+  id: "PEFY-EXPERIENCE-MEDIA-MCP"
+  name: "PEFY-GG Experience & Media Swarm MCP"
+  repository: "yemanlin1st/azowato_MCP"
+  deployment_project: "pefy-experience-media-mcp"
+  canonical_candidate: true
+  classification: "PLATFORM"
+  lifecycle: "OPERATE_VERIFY"
+  owner: "PEFY-GG / FYLAB"
+
+service:
+  mode: "Remote read-only MCP control plane"
+  endpoints:
+    - "/api/health"
+    - "/mcp"
+  deployment:
+    provider: "Vercel"
+    production_state_observed: "READY"
+    runtime_errors_last_7d_observed: 0
+
+security:
+  read_only: true
+  client_records_exposed: false
+  write_actions_exposed: false
+  bearer_auth_supported: true
+  bearer_auth_configuration_verified: false
+
+resilience:
+  governed_rollback_guard_present: true
+  rollback_default_mode: "observe"
+  destructive_or_schema_change_blind_rollback_forbidden: true
+
+quality:
+  typecheck: "REQUIRED"
+  logic_tests: "REQUIRED"
+  health_check: "REQUIRED"
+  authenticated_access_test: "REQUIRED_IF_API_KEY_ENABLED"
+  rollback_guard_test: "REQUIRED"
+  security: "REQUIRED"
+  provenance: "REQUIRED"
+  sbom: "REQUIRED"
+  deployment_smoke: "REQUIRED"
+
+release:
+  status: "PRODUCTION_DEPLOYMENT_OBSERVED_VERIFYING_CONTROLS"
+  production_ready_claim_allowed: false
+
+human_gates:
+  - "enable-automated-rollback-execute-mode"
+  - "authentication-policy-change"
+  - "production-secret-change"
+  - "security-exception"
+
+automation:
+  mode: "EXECUTE_TO_GATE"
+  notify_on: ["P0", "P1", "RUNTIME_REGRESSION", "SECURITY_BLOCK", "HUMAN_DECISION_REQUIRED"]
+  silent_on: ["PASS", "NO_MATERIAL_CHANGE"]

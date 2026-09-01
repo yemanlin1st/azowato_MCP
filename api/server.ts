@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import { createMcpHandler } from "mcp-handler";
 import { z } from "zod";
 
@@ -40,6 +41,11 @@ const CAPABILITY_GROUPS = [
   { id: "governance", primary: "Native PEFY governed loop", advisory: ["Plugin Management", "Skillspector", "Councils"] },
 ];
 
+const JSON_HEADERS = {
+  "content-type": "application/json",
+  "cache-control": "no-store, max-age=0",
+};
+
 const asText = (value: unknown) => ({ content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }] });
 
 function classifyMission(mission: string) {
@@ -71,6 +77,14 @@ function classifyMission(mission: string) {
     loopSequence: LOOPS[loop as keyof typeof LOOPS],
     mandatoryRule: "Exactly one primary execution engine; writes, deployment, publication and irreversible actions require the applicable human gate.",
   };
+}
+
+function bearerMatches(header: string | null, expected: string): boolean {
+  if (!header?.startsWith("Bearer ")) return false;
+  const provided = header.slice("Bearer ".length);
+  const providedBytes = Buffer.from(provided, "utf8");
+  const expectedBytes = Buffer.from(expected, "utf8");
+  return providedBytes.length === expectedBytes.length && timingSafeEqual(providedBytes, expectedBytes);
 }
 
 const mcp = createMcpHandler((server) => {
@@ -125,9 +139,21 @@ const mcp = createMcpHandler((server) => {
 });
 
 async function guarded(request: Request) {
-  const key = process.env.MCP_API_KEY;
-  if (!key) return new Response(JSON.stringify({ error: "MCP is locked until MCP_API_KEY is configured" }), { status: 503, headers: { "content-type": "application/json" } });
-  if (request.headers.get("authorization") !== `Bearer ${key}`) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { "content-type": "application/json", "www-authenticate": "Bearer" } });
+  const key = process.env.MCP_API_KEY?.trim();
+  if (!key) {
+    return new Response(JSON.stringify({ error: "MCP is locked until MCP_API_KEY is configured" }), {
+      status: 503,
+      headers: JSON_HEADERS,
+    });
+  }
+
+  if (!bearerMatches(request.headers.get("authorization"), key)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...JSON_HEADERS, "www-authenticate": "Bearer" },
+    });
+  }
+
   return mcp(request);
 }
 

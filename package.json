@@ -4,14 +4,21 @@
   "private": true,
   "type": "module",
   "description": "Read-only MCP control plane for PEFY-GG Experience & Media Swarm OS",
-  "engines": { "node": "22.x" },
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "verify:release": "npm run typecheck",
+    "sbom": "npm sbom --sbom-format cyclonedx"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.26.0",
     "mcp-handler": "1.1.0",
     "zod": "3.25.76"
   },
   "devDependencies": {
-    "@types/node": "22.15.3",
+    "@types/node": "24.3.0",
     "typescript": "5.9.3"
   }
 }

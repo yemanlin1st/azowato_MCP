@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.1",
+  "project_id": "PEFY-EXPERIENCE-MEDIA-MCP",
+  "updated_at": "2026-09-01T14:54:00Z",
+  "mode": "EXECUTE_TO_GATE",
+  "current_stage": "OPERATE_VERIFY",
+  "release_status": "PRODUCTION_DEPLOYMENT_OBSERVED_CONFIGURATION_REQUIRED",
+  "verified": {
+    "repository_access": true,
+    "vercel_project_found": true,
+    "production_deployment_ready_at_infrastructure_layer": true,
+    "runtime_error_clusters_last_7d": 0,
+    "health_endpoint_declared": true,
+    "health_readiness_contract_fail_closed_503_in_source": true,
+    "mcp_endpoint_declared": true,
+    "read_only_service_declared": true,
+    "rollback_guard_declared": true,
+    "bearer_auth_supported": true,
+    "constant_time_bearer_comparison_in_source": true,
+    "bearer_auth_configuration_verified": false,
+    "source_runtime_aligned_to_node_24": true,
+    "strict_typescript_verification_passed": true,
+    "high_severity_dependency_audit_passed": true,
+    "cyclonedx_sbom_generated_and_uploaded": true,
+    "productforge_ci_run_id": 33522292104
+  },
+  "gaps": [
+    {
+      "id": "PF-EXPMCP-001",
+      "severity": "P1",
+      "domain": "AUTHENTICATION",
+      "title": "Production MCP_API_KEY remains unconfigured or unverified; the service must remain fail-closed until a production secret is provisioned and authorization is tested",
+      "status": "OPEN",
+      "requires_human_admin": true
+    },
+    {
+      "id": "PF-EXPMCP-002",
+      "severity": "P1",
+      "domain": "SUPPLY_CHAIN",
+      "title": "CycloneDX SBOM and dependency evidence are now generated successfully; signed release provenance/attestation is still required for full production qualification",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "PF-EXPMCP-003",
+      "severity": "P2",
+      "domain": "CATALOG",
+      "title": "Repository and Vercel deployment naming differ and require persistent catalog linkage",
+      "status": "MITIGATED_BY_PRODUCTFORGE_MANIFEST"
+    },
+    {
+      "id": "PF-EXPMCP-004",
+      "severity": "P1",
+      "domain": "DEPLOYMENT_CONFIGURATION",
+      "title": "Hardened readiness/authentication source changes have not yet been promoted to the observed production deployment",
+      "status": "OPEN",
+      "requires_human_admin": true
+    }
+  ],
+  "next_gate": {
+    "name": "PRODUCTION_CONFIGURATION_AND_PROMOTION",
+    "requires_human": true,
+    "exit_criteria": [
+      "production MCP_API_KEY is provisioned through approved secret management without exposing the value",
+      "hardened branch is reviewed and promoted through the approved release process",
+      "GET /api/health returns HTTP 200 with ready=true after configuration",
+      "missing or invalid bearer credentials receive HTTP 401 from /mcp",
+      "valid bearer credentials reach the read-only MCP handler",
+      "signed provenance or equivalent approved release attestation is attached"
+    ]
+  }
+}
