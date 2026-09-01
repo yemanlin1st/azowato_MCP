@@ -1,0 +1,36 @@
+name: PEFY ProductForge MCP Gate
+
+on:
+  pull_request:
+  push:
+    branches: ['productforge/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Type, dependency and SBOM evidence
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Install exact direct dependencies
+        run: npm install --ignore-scripts --no-fund --no-audit
+      - name: Strict TypeScript verification
+        run: npm run verify:release
+      - name: High severity dependency gate
+        run: npm audit --omit=dev --audit-level=high
+      - name: Generate CycloneDX SBOM
+        run: npm run sbom > productforge-sbom.cdx.json
+      - name: Upload SBOM evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: pefy-experience-media-mcp-sbom
+          path: productforge-sbom.cdx.json
+          if-no-files-found: warn
+          retention-days: 30
