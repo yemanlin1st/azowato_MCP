@@ -21,6 +21,12 @@ async function sendFetchResponse(response, res) {
 
 const port = Number(process.env.PORT || 3000);
 const host = process.env.HOST || "0.0.0.0";
+const previewModeEnabled = process.env.PEFY_PREVIEW_MODE === "provider-neutral-remote" || process.argv.includes("--preview-selftest");
+let previewQualification = {
+  enabled: previewModeEnabled,
+  status: previewModeEnabled ? "pending" : "disabled",
+  updatedAt: new Date().toISOString(),
+};
 
 const server = http.createServer(async (req, res) => {
   try {
@@ -28,6 +34,15 @@ const server = http.createServer(async (req, res) => {
 
     if (url.pathname === "/api/health" || url.pathname === "/health") {
       return sendFetchResponse(healthGET(), res);
+    }
+
+    if (url.pathname === "/api/qualification") {
+      const body = JSON.stringify(previewQualification);
+      const status = previewQualification.status === "fail" ? 503 : 200;
+      res.statusCode = status;
+      res.setHeader("content-type", "application/json");
+      res.setHeader("cache-control", "no-store");
+      return res.end(body);
     }
 
     if (url.pathname !== "/mcp") {
@@ -65,8 +80,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 async function previewSelfTest() {
-  const enabled = process.env.PEFY_PREVIEW_MODE === "provider-neutral-remote" || process.argv.includes("--preview-selftest");
-  if (!enabled) return;
+  if (!previewModeEnabled) return;
   const key = process.env.MCP_API_KEY;
   if (!key) throw new Error("preview self-test requires MCP_API_KEY");
 
@@ -156,9 +170,10 @@ async function previewSelfTest() {
     throw new Error("SWE-ReX devfabric contract mismatch");
   }
 
-  console.log(JSON.stringify({
-    event: "PEFY_REMOTE_SELFTEST",
-    status: "PASS",
+  previewQualification = {
+    enabled: true,
+    status: "pass",
+    updatedAt: new Date().toISOString(),
     unauthenticatedBoundary: 401,
     authenticatedInitialize: 200,
     transportMode: session ? "stateful-session" : "stateless",
@@ -170,16 +185,27 @@ async function previewSelfTest() {
       miniSWEAgent: { version: mini.version, commit: mini.commit },
       sweRex: { version: rex.version, commit: rex.commit }
     }
+  };
+  console.log(JSON.stringify({
+    event: "PEFY_REMOTE_SELFTEST",
+    status: "PASS",
+    ...previewQualification
   }));
 }
 
 server.listen(port, host, () => {
   console.log(`PEFY portable MCP runtime listening on ${host}:${port}`);
   previewSelfTest().catch((error) => {
+    previewQualification = {
+      enabled: true,
+      status: "fail",
+      updatedAt: new Date().toISOString(),
+      error: String(error?.message || error)
+    };
     console.error(JSON.stringify({
       event: "PEFY_REMOTE_SELFTEST",
       status: "FAIL",
-      error: String(error?.message || error)
+      ...previewQualification
     }));
     process.exit(1);
   });
