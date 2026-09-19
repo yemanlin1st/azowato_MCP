@@ -105,6 +105,7 @@ jobs:
         run: |
           set -euo pipefail
           cd "$RUNNER_TEMP/9drive/backend"
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
           npm ci --no-audit --no-fund
           DATABASE_URL='mysql://pefy:pefy@127.0.0.1:3306/ninedrive' npm run prisma:generate
           npm run build
@@ -114,6 +115,7 @@ jobs:
         run: |
           set -euo pipefail
           cd "$RUNNER_TEMP/9drive/frontend"
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
           npm ci --no-audit --no-fund
           npm run build
           npm audit --omit=dev --audit-level=high
