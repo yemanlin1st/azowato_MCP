@@ -49,27 +49,13 @@
     },
     "miniSWEAgent": {
       "automaticRuntimeEgress": "deny",
-      "executionMode": "sandbox-first",
-      "localHostShell": "deny-by-default",
-      "allowedEnvironments": [
-        "swerex_docker",
-        "docker",
-        "podman-equivalent",
-        "bubblewrap",
-        "contree",
-        "ephemeral-ci-local-only"
-      ],
-      "modelProviderEgress": "mission-scoped-explicit-grant",
-      "modelSecrets": "secret-manager-injection-only",
-      "gitWrite": "feature-branch-or-disposable-worktree-only",
-      "productionDeploy": false,
-      "destructiveCommands": "human-approval-required",
-      "installBootstrapAllowlist": [
-        "github.com",
-        "pypi.org",
-        "files.pythonhosted.org"
-      ],
-      "note": "mini-SWE-agent has a bash execution surface; host-local autonomous execution is prohibited outside an already isolated disposable runtime."
+      "execution": "sandbox-required",
+      "hostShellDefault": "deny",
+      "modelProviderAccess": "mission-scoped-through-secret-manager-or-ΩOmniRoute",
+      "repositoryWrite": "isolated-branch-or-disposable-clone-only",
+      "productionWrite": false,
+      "networkDefault": "deny-except-explicit-allowlist",
+      "note": "LocalEnvironment is permitted only for disposable CI smoke tests, never autonomous T3/T4 work."
     },
     "sweRex": {
       "automaticRuntimeEgress": "deny",
@@ -78,6 +64,54 @@
       "privilegedContainers": false,
       "hostDockerSocket": "deny-unless-explicitly-approved",
       "note": "Prefer rootless/container isolation and bounded workspace mounts."
+    },
+    "sweReX": {
+      "role": "sandbox-runtime-adapter",
+      "localPrivilegedRuntime": "deny",
+      "preferredBackends": [
+        "Docker/Podman",
+        "remote disposable sandbox",
+        "bubblewrap-class isolation where supported"
+      ],
+      "hostMounts": "read-only-by-default",
+      "credentials": "ephemeral mission-scoped only"
+    },
+    "openrag": {
+      "deployment": "self-hosted-first",
+      "mcpAuth": "X-API-Key required",
+      "externalModelEgress": "through ΩOmniRoute/policy only",
+      "connectors": "disabled-until-explicitly-authorized",
+      "tracingTelemetry": "off-unless-approved",
+      "documentDataEgress": "deny-by-default",
+      "indexIsolation": "tenant/source provenance required",
+      "allowedCoreServices": [
+        "OpenSearch",
+        "Langflow",
+        "Docling",
+        "OpenRAG backend/frontend"
+      ]
+    },
+    "nineDrive": {
+      "automaticRuntimeEgress": "deny-unless-storage-provider-authorized",
+      "runtimeSelfUpdate": false,
+      "updateGitPull": false,
+      "systemMutationRoutes": false,
+      "googleOAuthConfig": "deployment-pipeline-only",
+      "backupRestoreRoutes": false,
+      "googleDriveScope": "dedicated-account-or-explicit-consent-only",
+      "publicSharing": "policy-gated",
+      "database": "isolated-application-metadata-store-not-canonical-enterprise-data",
+      "sourceTrust": "unsigned-exact-SHA-with-hardening-overlay"
+    },
+    "multiCloudPreview": {
+      "providerNeutralRequired": true,
+      "providers": [
+        "Railway preview",
+        "Vercel target-provider preview when credentials become available"
+      ],
+      "productionPromotionRequiresTargetProviderPreview": true,
+      "canonicalRuntime": "npm start portable runtime",
+      "failoverPrinciple": "no single cloud provider is authoritative for application state"
     }
   }
 }
