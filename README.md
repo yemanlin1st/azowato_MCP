@@ -15,7 +15,21 @@ Remote, read-only MCP control plane for the PEFY-GG Experience & Media Swarm OS.
 - `experience_score`
 - `release_gate`
 - `media_route`
+- `devfabric_status`
 - `local_install_plan`
+
+## ΩDEVFABRIC R0.1
+
+The control plane now exposes a read-only registry and installation planner for the governed development stack:
+
+- Connected/core adapters: GitHub, Context7, Figma, Vercel, Neon/PostgreSQL, Exa.
+- Qualified extension targets: Playwright, Sentry, Firecrawl, Brave Search, Sequential Thinking, SkillUI.
+- Playwright is dual-mode by design: CLI + SKILLS for coding-agent throughput; MCP for persistent exploratory browser workflows.
+- Firecrawl can start with the vendor-hosted keyless MCP endpoint for bounded basic retrieval, then move to OAuth/API-key mode for the full tool set.
+- Credentialed providers must use client/secret-manager injection. Secrets must never be committed, embedded in MCP URLs, or pasted into agent prompts/chat.
+- Production promotion requires version pinning, least privilege, tool allowlists, sandbox qualification, audit evidence, rollback and kill-switch controls.
+
+`local_install_plan` returns a client-specific bootstrap/qualification plan for `codex`, `vscode`, or a generic MCP host. It deliberately returns secret variable names only, never secret values.
 
 ## Security
 
