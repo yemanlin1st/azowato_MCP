@@ -57,12 +57,17 @@
     },
     "openrag": {
       "repository": "langflow-ai/openrag",
-      "version": "0.7.1",
-      "commit": "ba80be6d8a10081b926d897c883395f6c54f76ef",
+      "version": "0.5.0+snapshot",
+      "commit": "dbb6f9e442fe90b2a60414bf2eb6d4c83d1dd30d",
       "license": "Apache-2.0",
       "role": "governed RAG/search/MCP plane",
       "promotionPolicy": "manual-review-and-requalification",
-      "autoUpgrade": false
+      "autoUpgrade": false,
+      "releaseBaseline": "0.7.1",
+      "releaseBaselineCommit": "ba80be6d8a10081b926d897c883395f6c54f76ef",
+      "commitSignatureVerified": true,
+      "signatureVerifiedAt": "2026-09-18T22:00:32Z",
+      "selectionReason": "Newer signed upstream snapshot than v0.7.1 release; qualified with PEFY OpenRAG hardening overlay."
     },
     "9drive": {
       "repository": "zenhosta/9drive",
@@ -72,7 +77,11 @@
       "role": "multi-account Drive/S3 storage gateway",
       "promotionPolicy": "manual-review-and-requalification",
       "autoUpgrade": false,
-      "upstreamRelease": false
+      "upstreamRelease": false,
+      "commitSignatureVerified": false,
+      "signatureReason": "unsigned-upstream-commit",
+      "hardeningOverlayRequired": true,
+      "stockRuntimeAllowed": false
     },
     "continue": {
       "repository": "continuedev/continue",
