@@ -32,7 +32,7 @@ const LOOPS = {
 
 const CAPABILITY_GROUPS = [
   { id: "design", primary: "Figma/Canva under Impeccable and PEFY brand gates", advisory: ["Adobe Express", "HeyGen", "Open-Sora"] },
-  { id: "software", primary: "GitHub + Context7 + Vercel + Neon/PostgreSQL controlled build", advisory: ["Playwright", "Sentry", "Firecrawl", "Brave Search", "Exa", "SkillUI", "Supabase", "Base44"] },
+  { id: "software", primary: "GitHub + Context7 + Vercel + Neon/PostgreSQL controlled build", advisory: ["gstack", "Playwright", "Sentry", "Firecrawl", "Brave Search", "Exa", "SkillUI", "Supabase", "Base44"] },
   { id: "analytics", primary: "Data Analytics skill family", advisory: ["Airtable", "Google Sheets", "Postgres"] },
   { id: "documents", primary: "Artifact capability selected by output format", advisory: ["Google Drive", "Canva", "OpenAI templates"] },
   { id: "knowledge", primary: "RMS + MemPalace + OMNIA Core Store", advisory: ["Notion", "Google Drive"] },
@@ -103,6 +103,32 @@ const DEVFABRIC = {
       package: "skillui",
       secrets: [],
       official: "amaancoderx/skillui",
+    },
+    {
+      id: "gstack",
+      state: "runtime-install-required",
+      mode: "advisory skill factory under ΩDEVFABRIC; never replaces PEFY governance, ΩCSF, ΩWORKGRAPH or human approval gates",
+      official: "garrytan/gstack",
+      version: "1.87.4.0",
+      commit: "a6b3a57512ca6d5c6aa5b68f74f736195021f96e",
+      license: "MIT",
+      verifiedCommitSignature: true,
+      secrets: [],
+      activationProfile: {
+        namespacedSkills: true,
+        teamMode: false,
+        telemetry: "off",
+        proactive: false,
+        autoUpgrade: false,
+        updateCheck: false,
+        codexReviews: "disabled",
+        artifactsSyncMode: "off",
+        pairAgent: "off",
+        memorableRecall: "off",
+        checkpointPush: false,
+        planTuneHooks: "no",
+        designDetector: "off",
+      },
     },
   ],
   securityBaseline: [
@@ -184,6 +210,42 @@ function buildLocalInstallPlan(client: "codex" | "vscode" | "generic", include: 
       selfHostedCommand: "npx @sentry/mcp-server@latest --host=<SENTRY_HOST>",
       secretInjection: "SENTRY_ACCESS_TOKEN via secret manager only.",
       scopeRule: "Grant only the scopes needed by the enabled Sentry tools; keep write-capable tools disabled unless explicitly approved.",
+    });
+  }
+
+  if (wanted.has("gstack")) {
+    steps.push({
+      id: "gstack",
+      classification: "pinned-skill-suite",
+      source: "https://github.com/garrytan/gstack.git",
+      version: "1.87.4.0",
+      commit: "a6b3a57512ca6d5c6aa5b68f74f736195021f96e",
+      license: "MIT",
+      prerequisites: ["Git", "Bun >= 1.0", "Codex CLI authenticated when client=codex"],
+      commands: client === "codex" ? [
+        'GSTACK_DIR="$HOME/.local/share/pefy/vendor/gstack-1.87.4.0"',
+        'git clone --no-tags https://github.com/garrytan/gstack.git "$GSTACK_DIR"',
+        'cd "$GSTACK_DIR" && git checkout --detach a6b3a57512ca6d5c6aa5b68f74f736195021f96e',
+        'test "$(cat VERSION)" = "1.87.4.0"',
+        './setup --host codex --prefix --no-team',
+        './bin/gstack-config set telemetry off',
+        './bin/gstack-config set proactive false',
+        './bin/gstack-config set auto_upgrade false',
+        './bin/gstack-config set update_check false',
+        './bin/gstack-config set codex_reviews disabled',
+        './bin/gstack-config set artifacts_sync_mode off',
+        './bin/gstack-config set artifacts_sync_mode_prompted true',
+        './bin/gstack-config set pair_agent off',
+        './bin/gstack-config set memorable_recall off',
+        './bin/gstack-config set checkpoint_push false',
+        './bin/gstack-config set plan_tune_hooks no',
+        './bin/gstack-config set design_detector off',
+        './bin/gstack-config set transcript_ingest_mode off',
+        './bin/gstack-egress grants',
+      ] : [
+        "Install gstack only into a supported coding-agent host. Prefer Codex with the governed profile above; otherwise use the upstream --host option and reproduce the same security settings.",
+      ],
+      activationRule: "Manual invocation only by default. Any update, telemetry, remote pair-agent, external review, artifact sync or third-party bridge requires a separate policy decision.",
     });
   }
 
@@ -289,7 +351,7 @@ const mcp = createMcpHandler((server) => {
 
   server.tool("local_install_plan", "Generate a secret-safe local MCP/CLI installation and qualification plan for the development fabric.", {
     client: z.enum(["codex", "vscode", "generic"]).default("generic"),
-    include: z.array(z.enum(["playwright", "sentry", "firecrawl", "brave-search", "sequential-thinking", "skillui"])).default([]),
+    include: z.array(z.enum(["playwright", "sentry", "firecrawl", "brave-search", "sequential-thinking", "skillui", "gstack"])).default([]),
   }, async ({ client, include }) => asText(buildLocalInstallPlan(client, include)));
 
   server.tool("loop_catalog", "Return controlled execution loops and state-machine sequences.", { loop: z.string().optional() }, async ({ loop }) => {
