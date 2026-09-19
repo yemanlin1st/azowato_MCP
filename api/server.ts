@@ -32,7 +32,7 @@ const LOOPS = {
 
 const CAPABILITY_GROUPS = [
   { id: "design", primary: "Figma/Canva under Impeccable and PEFY brand gates", advisory: ["Adobe Express", "HeyGen", "Open-Sora"] },
-  { id: "software", primary: "GitHub + Context7 + Vercel + Neon/PostgreSQL controlled build", advisory: ["gstack", "Playwright", "Sentry", "Firecrawl", "Brave Search", "Exa", "SkillUI", "Supabase", "Base44"] },
+  { id: "software", primary: "GitHub + Context7 + Vercel + Neon/PostgreSQL controlled build", advisory: ["gstack", "mini-SWE-agent", "SWE-ReX", "Playwright", "Sentry", "Firecrawl", "Brave Search", "Exa", "SkillUI", "Supabase", "Base44"] },
   { id: "analytics", primary: "Data Analytics skill family", advisory: ["Airtable", "Google Sheets", "Postgres"] },
   { id: "documents", primary: "Artifact capability selected by output format", advisory: ["Google Drive", "Canva", "OpenAI templates"] },
   { id: "knowledge", primary: "RMS + MemPalace + OMNIA Core Store", advisory: ["Notion", "Google Drive"] },
@@ -128,6 +128,46 @@ const DEVFABRIC = {
         checkpointPush: false,
         planTuneHooks: "no",
         designDetector: "off",
+      },
+    },
+    {
+      id: "mini-swe-agent",
+      state: "runtime-install-required",
+      mode: "default SWE execution adapter for bounded software-engineering missions; sandbox-first; full SWE-agent remains optional for research/tool-interface experiments",
+      official: "SWE-agent/mini-swe-agent",
+      version: "2.4.6",
+      commit: "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+      license: "MIT",
+      verifiedCommitSignature: true,
+      secrets: ["mission-scoped model provider credential only when a live LLM run is explicitly authorized"],
+      activationProfile: {
+        execution: "sandbox-first",
+        defaultEnvironment: "swerex_docker",
+        hostLocalAutonomy: false,
+        modelSecretPersistence: false,
+        productionDeploy: false,
+        destructiveCommands: "human-approval-required",
+        gitWrites: "feature-branch-or-disposable-worktree-only",
+        trajectoryEvidence: true,
+        stepAndCostLimitsRequired: true,
+      },
+    },
+    {
+      id: "swe-rex",
+      state: "runtime-install-required",
+      mode: "preferred sandbox/runtime adapter for mini-SWE-agent shell execution",
+      official: "SWE-agent/SWE-ReX",
+      version: "1.4.0",
+      commit: "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
+      license: "MIT",
+      verifiedCommitSignature: true,
+      secrets: [],
+      activationProfile: {
+        remoteBackends: "off-by-default",
+        privilegedContainers: false,
+        hostDockerSocket: "deny-by-default",
+        workspaceMount: "bounded",
+        network: "default-deny-or-mission-allowlist",
       },
     },
   ],
@@ -249,6 +289,40 @@ function buildLocalInstallPlan(client: "codex" | "vscode" | "generic", include: 
     });
   }
 
+
+  if (wanted.has("mini-swe-agent") || wanted.has("swe-rex")) {
+    steps.push({
+      id: "mini-swe-agent",
+      classification: "pinned-software-engineering-agent",
+      source: "https://github.com/SWE-agent/mini-swe-agent.git",
+      version: "2.4.6",
+      commit: "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+      sandbox: {
+        preferred: "SWE-ReX Docker",
+        source: "https://github.com/SWE-agent/SWE-ReX.git",
+        version: "1.4.0",
+        commit: "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
+      },
+      commands: [
+        'SWE_DIR="$HOME/.local/share/pefy/vendor/mini-swe-agent-2.4.6"',
+        'REX_DIR="$HOME/.local/share/pefy/vendor/swe-rex-1.4.0"',
+        'python3 -m venv "$HOME/.local/share/pefy/venvs/mini-swe-agent-2.4.6"',
+        '. "$HOME/.local/share/pefy/venvs/mini-swe-agent-2.4.6/bin/activate"',
+        'git clone --no-tags https://github.com/SWE-agent/mini-swe-agent.git "$SWE_DIR"',
+        'git -C "$SWE_DIR" checkout --detach a83fcae82d2a08f0ee0c688f9d137b3566c097f8',
+        'git clone --no-tags https://github.com/SWE-agent/SWE-ReX.git "$REX_DIR"',
+        'git -C "$REX_DIR" checkout --detach f802b3e14d82aa4c13291d2fda5bd4fd48f36f91',
+        'python -m pip install "$REX_DIR" "$SWE_DIR"',
+        'python -m pip check',
+        'mini --help',
+      ],
+      runtimeRule: "Do not run autonomous tasks on the host-local environment. Use swerex_docker/docker/bubblewrap/contree or an already-isolated disposable CI runtime.",
+      modelRule: "Inject model credentials per mission from a secret manager; do not persist them in mini-SWE-agent global config, repository files, prompts or logs.",
+      writeRule: "Use a dedicated feature branch or disposable worktree. Production deploy, merge, destructive commands and external communications remain human-gated.",
+      qualification: ["exact commit and version", "license/signature", "agent-loop smoke", "sandbox adapter", "dependency consistency", "trajectory evidence"],
+    });
+  }
+
   return {
     client,
     prerequisites: ["Node.js 22 LTS preferred", "npx available", "MCP-aware client/runtime", "secret manager for credentialed providers"],
@@ -351,7 +425,7 @@ const mcp = createMcpHandler((server) => {
 
   server.tool("local_install_plan", "Generate a secret-safe local MCP/CLI installation and qualification plan for the development fabric.", {
     client: z.enum(["codex", "vscode", "generic"]).default("generic"),
-    include: z.array(z.enum(["playwright", "sentry", "firecrawl", "brave-search", "sequential-thinking", "skillui", "gstack"])).default([]),
+    include: z.array(z.enum(["playwright", "sentry", "firecrawl", "brave-search", "sequential-thinking", "skillui", "gstack", "mini-swe-agent", "swe-rex"])).default([]),
   }, async ({ client, include }) => asText(buildLocalInstallPlan(client, include)));
 
   server.tool("loop_catalog", "Return controlled execution loops and state-machine sequences.", { loop: z.string().optional() }, async ({ loop }) => {
