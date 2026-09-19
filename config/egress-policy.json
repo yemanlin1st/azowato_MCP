@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "1.0",
+  "mode": "default-deny",
+  "observedAt": "2026-09-19",
+  "principles": [
+    "No automatic third-party egress without an explicit capability grant.",
+    "Credentials are injected by secret managers and never encoded in URLs, prompts, logs or source.",
+    "User-directed browser targets are mission-scoped and are not converted into standing allowlist entries."
+  ],
+  "capabilities": {
+    "gstack": {
+      "automaticRuntimeEgress": "deny",
+      "telemetry": "off",
+      "updateCheck": false,
+      "autoUpgrade": false,
+      "codexReviews": "disabled",
+      "artifactsSyncMode": "off",
+      "pairAgent": "off",
+      "memorableRecall": "off",
+      "transcriptIngestMode": "off",
+      "installBootstrapAllowlist": [
+        "github.com",
+        "registry.npmjs.org"
+      ],
+      "browserTargetPolicy": "per-mission explicit target authorization",
+      "note": "gstack egress ledger is forensic evidence, not a network firewall; PEFY network policy remains authoritative."
+    },
+    "previewQualification": {
+      "allowlist": [
+        "registry.npmjs.org",
+        "api.vercel.com",
+        "vercel.com",
+        "*.vercel.app",
+        "railway.app",
+        "*.up.railway.app",
+        "github.com",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "docker.io",
+        "registry-1.docker.io"
+      ],
+      "writeScope": "ephemeral Vercel preview deployment only",
+      "productionAliasMutation": false
+    },
+    "externalMcp": {
+      "firecrawl": [
+        "mcp.firecrawl.dev"
+      ],
+      "sentry": [
+        "mcp.sentry.dev"
+      ],
+      "braveSearch": [
+        "api.search.brave.com"
+      ],
+      "rule": "Disabled unless the mission routes to the capability and its auth/policy gate passes."
+    },
+    "miniSWEAgent": {
+      "automaticRuntimeEgress": "deny",
+      "executionMode": "sandbox-first",
+      "localHostShell": "deny-by-default",
+      "modelProviderEgress": "mission-scoped-explicit-grant",
+      "modelSecrets": "secret-manager-injection-only",
+      "gitWrite": "feature-branch-or-disposable-worktree-only",
+      "productionDeploy": false,
+      "destructiveCommands": "human-approval-required"
+    },
+    "sweRex": {
+      "automaticRuntimeEgress": "deny",
+      "privilegedContainers": false,
+      "hostDockerSocket": "deny-unless-explicitly-approved",
+      "preferredBackends": [
+        "Docker/Podman",
+        "remote disposable sandbox",
+        "bubblewrap-class isolation where supported"
+      ],
+      "hostMounts": "read-only-by-default",
+      "credentials": "ephemeral mission-scoped only"
+    },
+    "sweReX": {
+      "role": "sandbox-runtime-adapter",
+      "localPrivilegedRuntime": "deny",
+      "preferredBackends": [
+        "Docker/Podman",
+        "remote disposable sandbox",
+        "bubblewrap-class isolation where supported"
+      ],
+      "hostMounts": "read-only-by-default",
+      "credentials": "ephemeral mission-scoped only"
+    },
+    "openrag": {
+      "deployment": "self-hosted-first",
+      "mcpAuth": "X-API-Key required",
+      "externalModelEgress": "through ΩOmniRoute/policy only",
+      "connectors": "disabled-until-explicitly-authorized",
+      "tracingTelemetry": "off-unless-approved",
+      "documentDataEgress": "deny-by-default",
+      "indexIsolation": "tenant/source provenance required",
+      "allowedCoreServices": [
+        "OpenSearch",
+        "Langflow",
+        "Docling",
+        "OpenRAG backend/frontend"
+      ]
+    },
+    "nineDrive": {
+      "automaticRuntimeEgress": "deny-unless-storage-provider-authorized",
+      "runtimeSelfUpdate": false,
+      "updateGitPull": false,
+      "systemMutationRoutes": false,
+      "googleOAuthConfig": "deployment-pipeline-only",
+      "backupRestoreRoutes": false,
+      "googleDriveScope": "dedicated-account-or-explicit-consent-only",
+      "publicSharing": "policy-gated",
+      "database": "isolated-application-metadata-store-not-canonical-enterprise-data",
+      "sourceTrust": "unsigned-exact-SHA-with-hardening-overlay"
+    },
+    "multiCloudPreview": {
+      "providerNeutralRequired": true,
+      "providers": [
+        "Railway preview",
+        "Vercel target-provider preview when credentials become available"
+      ],
+      "productionPromotionRequiresTargetProviderPreview": true,
+      "canonicalRuntime": "npm start portable runtime",
+      "failoverPrinciple": "no single cloud provider is authoritative for application state"
+    },
+    "agenticCoding": {
+      "defaultNetwork": "deny-unless-mission-granted",
+      "autonomousShell": "sandbox-required",
+      "workspaceWrite": "single-primary-writer",
+      "allowedBootstrap": [
+        "github.com",
+        "api.github.com",
+        "registry.npmjs.org",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "releases.openai.com",
+        "chatgpt.com"
+      ],
+      "providers": {
+        "mini-swe-agent": {
+          "modelEgress": "policy-routed-only",
+          "hostShell": false
+        },
+        "swe-rex": {
+          "remoteExecution": "disabled-until-target-authenticated",
+          "localSandbox": true
+        },
+        "codex-cli": {
+          "auth": "ChatGPT or secret-managed API key",
+          "productionWrites": "human-gated"
+        },
+        "aider": {
+          "modelEgress": "policy-routed-only",
+          "gitAutoCommit": "disabled-by-default-in-governed-mode"
+        },
+        "continue": {
+          "cloudLogin": "optional",
+          "localOnlyMode": "preferred-when-possible"
+        }
+      }
+    },
+    "ragKnowledge": {
+      "openrag": {
+        "bootstrap": [
+          "github.com",
+          "pypi.org",
+          "files.pythonhosted.org",
+          "docker.io",
+          "registry-1.docker.io"
+        ],
+        "runtimeModel": "ollama-or-policy-routed-provider",
+        "builtInMcp": "authenticated",
+        "opensearch": "private-network-only",
+        "telemetry": "off-unless-explicitly-approved",
+        "externalConnectors": "disabled-until-separately-authorized"
+      }
+    },
+    "modelRuntime": {
+      "ollama": {
+        "listen": "loopback-or-private-network",
+        "publicExposure": false,
+        "modelPull": "explicit-approved-models-only"
+      },
+      "tabby": {
+        "listen": "loopback-or-private-network",
+        "publicExposure": false,
+        "usageCollection": "disabled",
+        "gpuOptional": true
+      }
+    },
+    "storageGateway": {
+      "nineDrive": {
+        "googleOAuth": "credentials-required",
+        "s3": "credentials-required",
+        "secrets": "vault-or-runtime-injection-only",
+        "upstreamUpdateUi": "disabled-in-governed-deployment",
+        "defaultPasswords": "forbidden",
+        "publicUploadApi": "disabled-until-api-key-policy-and-rate-limits-pass"
+      }
+    },
+    "telephony": {
+      "threeCX": {
+        "nativePlugin": false,
+        "api": "3CX v20 Configuration API",
+        "credentials": "required",
+        "scope": "least-privilege service principal",
+        "writes": "human-approved T4",
+        "recordingsAndCallContent": "data-classification-and-retention-policy-required"
+      }
+    }
+  }
+}

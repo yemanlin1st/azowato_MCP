@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "1.0",
+  "observedAt": "2026-09-19",
+  "gate": "R0.1 Preview Qualification",
+  "controlPlane": {
+    "repository": "yemanlin1st/azowato_MCP",
+    "branch": "feat/omega-devfabric-r01-20260919",
+    "runtimeQualifiedSha": "1ed10b557b6b2513ac65c257d89010bb8872569a",
+    "qualificationRun": {
+      "id": 35443510199,
+      "number": 44,
+      "conclusion": "success"
+    },
+    "gstackQualificationRun": {
+      "id": 35443510203,
+      "number": 19,
+      "conclusion": "success"
+    },
+    "sweAgentQualificationRun": {
+      "id": 35443510201,
+      "number": 6,
+      "conclusion": "success"
+    }
+  },
+  "gstack": {
+    "upstream": "garrytan/gstack",
+    "version": "1.87.4.0",
+    "commit": "a6b3a57512ca6d5c6aa5b68f74f736195021f96e",
+    "commitSignatureVerified": true,
+    "license": "MIT",
+    "disposableCodexInstall": "pass",
+    "sovereignConfigVerification": "pass",
+    "upstreamSecurityConfigTests": "pass"
+  },
+  "providerNeutralRemotePreview": {
+    "provider": "Railway",
+    "isolation": "private dedicated preview project",
+    "projectName": "pefy-devfabric-r01-preview",
+    "serviceName": "omega-devfabric-r01-preview",
+    "deploymentId": "3c70c804-e4c9-4c8c-ab6d-6d1d7cf82d46",
+    "deployedSha": "1ed10b557b6b2513ac65c257d89010bb8872569a",
+    "branch": "feat/omega-devfabric-r01-20260919",
+    "deploymentStatus": "SUCCESS",
+    "health": {
+      "http": 200,
+      "status": "ready",
+      "service": "PEFY-GG Meta Supra Capability Mesh MCP"
+    },
+    "mcp": {
+      "authenticatedInitializeHttp": 200,
+      "transportMode": "stateless",
+      "sessionPresent": false,
+      "toolsListHttp": 200,
+      "toolCount": 9,
+      "tools": [
+        "capability_status",
+        "capability_catalog",
+        "route_mission",
+        "compile_prompt_contract",
+        "quality_gate",
+        "select_councils",
+        "devfabric_status",
+        "local_install_plan",
+        "loop_catalog"
+      ],
+      "devfabricCapability": {
+        "miniSWEAgent": {
+          "version": "2.4.6",
+          "commit": "a83fcae82d2a08f0ee0c688f9d137b3566c097f8"
+        },
+        "sweRex": {
+          "version": "1.4.0",
+          "commit": "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91"
+        }
+      }
+    },
+    "unauthenticatedBoundaryHttp": 401
+  },
+  "targetProvider": {
+    "provider": "Vercel",
+    "previewStatus": "blocked",
+    "reason": "GitHub deployment credentials are not configured and connected direct-deploy operation is unavailable server-side",
+    "productionPromotion": "blocked-until-vercel-preview-green"
+  },
+  "permanentLocalActivation": {
+    "status": "runtime-access-blocked",
+    "qualifiedPortableInstall": true,
+    "reason": "No authorized Remote Desktop device is online and Codex Tasks is not authenticated; use pinned local_install_plan when either becomes reachable."
+  },
+  "productionChanged": false,
+  "miniSWEAgent": {
+    "upstream": "SWE-agent/mini-swe-agent",
+    "role": "default bounded software-engineering execution adapter",
+    "version": "2.4.6",
+    "commit": "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+    "commitSignatureVerified": true,
+    "license": "MIT",
+    "upstreamDefaultRecommendation": true,
+    "exactSourceInstall": "pass",
+    "dependencyCheck": "pass",
+    "cliImport": "pass",
+    "deterministicAgentLoop": "pass",
+    "externalModelCalls": 0,
+    "trajectoryEvidence": "pass",
+    "hostLocalAutonomy": false,
+    "permanentModelSecret": false,
+    "productionDeployAuthority": false
+  },
+  "sweRex": {
+    "upstream": "SWE-agent/SWE-ReX",
+    "role": "preferred sandbox execution adapter",
+    "version": "1.4.0",
+    "commit": "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
+    "commitSignatureVerified": true,
+    "license": "MIT",
+    "exactSourceInstall": "pass",
+    "importAndAdapterResolution": "pass",
+    "adapterClass": "SwerexDockerEnvironment",
+    "privilegedContainers": false,
+    "hostDockerSocket": "deny-by-default"
+  }
+}

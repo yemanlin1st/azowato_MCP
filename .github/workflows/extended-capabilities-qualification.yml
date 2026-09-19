@@ -1,0 +1,167 @@
+name: extended-capabilities-qualification
+
+on:
+  pull_request:
+    paths:
+      - "api/server.ts"
+      - "config/upstream-pins.json"
+      - "config/egress-policy.json"
+      - "scripts/harden_9drive.py"
+      - "scripts/validate_extended_fabric.mjs"
+      - ".github/workflows/extended-capabilities-qualification.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: extended-capabilities-qualification-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  openrag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OPENRAG_COMMIT: dbb6f9e442fe90b2a60414bf2eb6d4c83d1dd30d
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.13"
+      - name: Fetch exact OpenRAG source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none --no-checkout https://github.com/langflow-ai/openrag.git "$RUNNER_TEMP/openrag"
+          git -C "$RUNNER_TEMP/openrag" fetch --depth 1 origin "$OPENRAG_COMMIT"
+          git -C "$RUNNER_TEMP/openrag" checkout --detach "$OPENRAG_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/openrag" rev-parse HEAD)" = "$OPENRAG_COMMIT"
+          grep -q 'version = "0.5.0"' "$RUNNER_TEMP/openrag/pyproject.toml"
+          grep -q "Apache License" "$RUNNER_TEMP/openrag/LICENSE"
+      - name: Apply OpenRAG multi-cloud overlay
+        run: |
+          python scripts/harden_openrag.py "$RUNNER_TEMP/openrag"
+          test -f "$RUNNER_TEMP/openrag/PEFY_OPENRAG_HARDENING.json"
+
+      - name: Install and import OpenRAG
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv "$RUNNER_TEMP/openrag-venv"
+          . "$RUNNER_TEMP/openrag-venv/bin/activate"
+          python -m pip install --upgrade pip
+          pip install "$RUNNER_TEMP/openrag"
+          python - <<'PY'
+          from importlib.metadata import version
+          import fastapi, httpx, opensearchpy, mcp
+          assert version("openrag") == "0.5.0"
+          print("OpenRAG import smoke PASS")
+          PY
+      - name: Validate OpenRAG architecture and MCP contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/openrag"
+          docker compose -f docker-compose.yml config >/tmp/openrag-compose.yml
+          grep -q "opensearch:" /tmp/openrag-compose.yml
+          grep -q "openrag-backend:" /tmp/openrag-compose.yml
+          grep -q "openrag-frontend:" /tmp/openrag-compose.yml
+          grep -q "langflow:" /tmp/openrag-compose.yml
+          grep -R --include='*.py' --include='*.md' -q "X-API-Key" .
+          grep -R --include='*.py' --include='*.md' -q "/mcp" .
+      - name: Evidence
+        run: |
+          mkdir -p evidence
+          printf '%s\n' '{"status":"PASS","openragVersion":"0.5.0","selfHostedFirst":true,"documentDataEgress":"deny-by-default"}' > evidence/openrag.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: openrag-${{ github.run_id }}
+          path: evidence/openrag.json
+          retention-days: 90
+
+  nine-drive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NINE_DRIVE_COMMIT: 811d4a2137538b73abb43d195d7bf452e01b0c58
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "22"
+      - name: Fetch exact 9drive source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none --no-checkout https://github.com/zenhosta/9drive.git "$RUNNER_TEMP/9drive"
+          git -C "$RUNNER_TEMP/9drive" fetch --depth 1 origin "$NINE_DRIVE_COMMIT"
+          git -C "$RUNNER_TEMP/9drive" checkout --detach "$NINE_DRIVE_COMMIT"
+          test "$(git -C "$RUNNER_TEMP/9drive" rev-parse HEAD)" = "$NINE_DRIVE_COMMIT"
+          grep -q "Apache License" "$RUNNER_TEMP/9drive/LICENSE"
+      - name: Apply PEFY hardening overlay
+        run: |
+          python scripts/harden_9drive.py "$RUNNER_TEMP/9drive"
+          test -f "$RUNNER_TEMP/9drive/PEFY_HARDENING.json"
+          ! grep -q "child_process" "$RUNNER_TEMP/9drive/backend/src/modules/system/system.routes.ts"
+          grep -q "PEFY_GOVERNED_OPERATION_ONLY" "$RUNNER_TEMP/9drive/backend/src/modules/system/system.routes.ts"
+      - name: Build and audit backend
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/9drive/backend"
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          npm ci --no-audit --no-fund
+          DATABASE_URL='mysql://pefy:pefy@127.0.0.1:3306/ninedrive' npm run prisma:generate
+          npm run build
+          npm audit --omit=dev --audit-level=high
+      - name: Build and audit frontend
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/9drive/frontend"
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          npm ci --no-audit --no-fund
+          npm run build
+          npm audit --omit=dev --audit-level=high
+      - name: Health smoke with no storage credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/9drive/backend"
+          export DATABASE_URL='mysql://pefy:pefy@127.0.0.1:3306/ninedrive'
+          export APP_PORT=4040
+          export FRONTEND_URL='http://127.0.0.1:5173'
+          export JWT_ACCESS_SECRET='PEFY_TEST_ONLY_JWT_SECRET_0123456789ABCDEF'
+          export TOKEN_ENCRYPTION_KEY='PEFY_TEST_ONLY_ENCRYPTION_KEY_0123456789'
+          node dist/server.js >/tmp/9drive.log 2>&1 &
+          pid=$!
+          trap 'kill '"$pid"' 2>/dev/null || true' EXIT
+          for i in $(seq 1 20); do
+            code=$(curl -sS -o /tmp/9drive-health.json -w '%{http_code}' http://127.0.0.1:4040/health || true)
+            [ "$code" = "200" ] && break
+            sleep 1
+          done
+          test "$code" = "200"
+          grep -q '"status":"ok"' /tmp/9drive-health.json
+          kill "$pid"
+          wait "$pid" || true
+          trap - EXIT
+      - name: Hardened Compose validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/9drive"
+          docker compose -f docker-compose.yml config --no-interpolate >/tmp/9drive-compose.yml
+          ! grep -q "change-this-jwt-secret" /tmp/9drive-compose.yml
+          ! grep -q "change-this-encryption-key" /tmp/9drive-compose.yml
+          ! grep -q "change-this-database-password" /tmp/9drive-compose.yml
+      - name: Evidence
+        run: |
+          mkdir -p evidence
+          printf '%s\n' '{"status":"PASS","sourceTrust":"unsigned-exact-SHA-sandbox-only","hardeningOverlay":true,"runtimeSelfUpdate":false,"systemMutationRoutes":false,"activationProfile":"S3-first"}' > evidence/9drive.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: nine-drive-${{ github.run_id }}
+          path: evidence/9drive.json
+          retention-days: 90

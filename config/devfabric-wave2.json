@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "1.0",
+  "observedAt": "2026-09-19",
+  "name": "ΩDEVFABRIC Wave 2",
+  "orchestration": {
+    "pattern": "sequence-synchronize-parallel-reconcile",
+    "phases": [
+      "discover-and-pin",
+      "static-security-and-license-audit",
+      "parallel-install-qualification",
+      "parallel-service-smoke",
+      "synchronize-evidence",
+      "reconcile-conflicts",
+      "provider-neutral-preview",
+      "target-provider-preview",
+      "human-promotion-gate"
+    ],
+    "singleWriterRule": "Only the selected primary coding agent may write to a branch at a time. Advisory agents operate read-only or on isolated worktrees and reconcile via diff/evidence.",
+    "primaryCodingOrder": [
+      "codex-cli",
+      "mini-swe-agent",
+      "gstack",
+      "aider",
+      "continue"
+    ],
+    "codeServiceOrder": [
+      "tabby",
+      "ollama"
+    ],
+    "knowledgeOrder": [
+      "openrag",
+      "context7",
+      "exa"
+    ],
+    "storageOrder": [
+      "9drive",
+      "google-drive",
+      "s3-compatible"
+    ],
+    "communicationsOrder": [
+      "3cx-adapter",
+      "omega-unicom"
+    ]
+  },
+  "planes": {
+    "agenticCoding": {
+      "primary": [
+        "codex-cli",
+        "mini-swe-agent"
+      ],
+      "advisory": [
+        "gstack",
+        "aider",
+        "continue"
+      ],
+      "execution": "SWE-ReX or equivalent sandbox for autonomous shell execution"
+    },
+    "knowledgeRag": {
+      "primary": "openrag",
+      "modelProvider": "ollama-or-policy-routed-cloud",
+      "builtInMcp": "/mcp",
+      "externalDocs": "context7",
+      "webResearch": "exa"
+    },
+    "modelRuntime": {
+      "local": "ollama",
+      "codeAssistant": "tabby",
+      "cloud": "ΩOmniRoute model registry",
+      "policy": "local-first for confidential/offline workloads when capability is sufficient"
+    },
+    "storage": {
+      "gateway": "9drive",
+      "targets": [
+        "Google Drive",
+        "S3-compatible storage"
+      ],
+      "databases": {
+        "nineDrive": "MySQL 8+",
+        "controlPlane": "Neon/PostgreSQL"
+      },
+      "noDefaultSecrets": true
+    },
+    "communications": {
+      "provider": "3CX v20 Configuration API adapter",
+      "activation": "credentials-and-license-required",
+      "auth": "service-principal/token; least privilege",
+      "nativePluginAvailable": false
+    },
+    "multicloud": {
+      "preview": [
+        "Railway"
+      ],
+      "targetProduction": [
+        "Vercel"
+      ],
+      "onPrem": [
+        "Rocky Linux/container runtime"
+      ],
+      "data": [
+        "Neon/PostgreSQL",
+        "MySQL",
+        "OpenSearch"
+      ],
+      "objectStorage": [
+        "Google Drive",
+        "S3-compatible via 9drive"
+      ],
+      "failoverRule": "Provider-neutral contracts; no provider may own canonical business state without export/restore evidence."
+    }
+  }
+}

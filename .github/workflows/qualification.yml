@@ -1,0 +1,80 @@
+name: qualification
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qualification-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Setup Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "22"
+
+      - name: Install dependencies without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Upload generated lockfile evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: qualified-package-lock
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: TypeScript qualification
+        run: npm run typecheck
+
+      - name: ΩDEVFABRIC policy contract
+        run: npm run test:logic
+
+      - name: ΩDEVFABRIC egress/security contract
+        run: npm run test:egress
+
+      - name: Extended SWE RAG storage contract
+        run: npm run test:extended
+
+      - name: Wave 2 synchronization and reconciliation
+        run: npm run test:wave2
+
+      - name: MCP boundary and registry smoke test
+        run: timeout 20s npm run test:mcp
+
+      - name: Full network MCP preview smoke
+        run: timeout 30s npm run test:mcp-network
+
+      - name: Rollback guard fail-closed contract
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/rollback-evidence"
+          set +e
+          output=$(PEFY_ROLLBACK_EVIDENCE_DIR="$RUNNER_TEMP/rollback-evidence" python scripts/rollback_guard.py 2>&1)
+          code=$?
+          set -e
+          echo "$output"
+          test "$code" -eq 2
+          echo "$output" | grep -q '"decision": "BLOCKED_MISSING_HEALTH_URL"'
+
+      - name: Production dependency audit
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Reproducibility contract
+        shell: bash
+        run: |
+          test -f package-lock.json
+          node -e 'const p=require("./package-lock.json"); if(p.name!=="pefy-meta-supra-capability-mesh-mcp" || p.version!=="2.1.0" || p.lockfileVersion!==3) process.exit(1)'

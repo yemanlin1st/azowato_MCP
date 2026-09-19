@@ -1,0 +1,131 @@
+{
+  "schemaVersion": "1.0",
+  "observedAt": "2026-09-19",
+  "dependencies": {
+    "gstack": {
+      "repository": "garrytan/gstack",
+      "version": "1.87.4.0",
+      "commit": "a6b3a57512ca6d5c6aa5b68f74f736195021f96e",
+      "commitSignatureVerified": true,
+      "license": "MIT",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false,
+      "ephemeralQualification": {
+        "required": true,
+        "target": "GitHub Actions disposable Codex home",
+        "workflow": ".github/workflows/gstack-pinned-qualification.yml",
+        "bunVersion": "1.3.10",
+        "setupBunActionCommit": "0c5077e51419868618aeaa5fe8019c62421857d6",
+        "controls": [
+          "exact upstream commit",
+          "version and license check",
+          "sovereign config before setup",
+          "namespaced Codex skill install",
+          "egress grants verification",
+          "targeted upstream security/config tests"
+        ],
+        "status": "qualified",
+        "qualifiedAt": "2026-09-19",
+        "workflowRunId": 35443510203,
+        "workflowRunNumber": 19,
+        "qualifiedControlPlaneSha": "1ed10b557b6b2513ac65c257d89010bb8872569a"
+      }
+    },
+    "mini-swe-agent": {
+      "repository": "SWE-agent/mini-swe-agent",
+      "version": "2.4.6",
+      "commit": "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+      "license": "MIT",
+      "role": "default autonomous software-engineering agent",
+      "sandboxRequired": true,
+      "preferredSandbox": "SWE-ReX/Docker/Podman/bubblewrap",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false,
+      "commitSignatureVerified": true,
+      "signatureVerifiedAt": "2026-07-23T03:12:02Z"
+    },
+    "swe-rex": {
+      "repository": "SWE-agent/SWE-ReX",
+      "version": "1.4.0",
+      "commit": "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
+      "license": "MIT",
+      "role": "sandboxed execution substrate",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false,
+      "commitSignatureVerified": true,
+      "signatureVerifiedAt": "2025-08-14T01:12:49Z"
+    },
+    "openrag": {
+      "repository": "langflow-ai/openrag",
+      "version": "0.5.0+snapshot",
+      "commit": "dbb6f9e442fe90b2a60414bf2eb6d4c83d1dd30d",
+      "license": "Apache-2.0",
+      "role": "governed RAG/search/MCP plane",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false,
+      "releaseBaseline": "0.7.1",
+      "releaseBaselineCommit": "ba80be6d8a10081b926d897c883395f6c54f76ef",
+      "commitSignatureVerified": true,
+      "signatureVerifiedAt": "2026-09-18T22:00:32Z",
+      "selectionReason": "Newer signed upstream snapshot than v0.7.1 release; qualified with PEFY OpenRAG hardening overlay."
+    },
+    "9drive": {
+      "repository": "zenhosta/9drive",
+      "version": "commit-pinned",
+      "commit": "811d4a2137538b73abb43d195d7bf452e01b0c58",
+      "license": "Apache-2.0",
+      "role": "multi-account Drive/S3 storage gateway",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false,
+      "upstreamRelease": false,
+      "commitSignatureVerified": false,
+      "signatureReason": "unsigned-upstream-commit",
+      "hardeningOverlayRequired": true,
+      "stockRuntimeAllowed": false
+    },
+    "continue": {
+      "repository": "continuedev/continue",
+      "version": "2.0.0-vscode",
+      "commit": "03b05ef60c378ff06f9e39ada2e22c95fe9ef6ad",
+      "license": "Apache-2.0",
+      "role": "IDE/CLI compatibility agent",
+      "lifecycle": "repository compatibility/final VS Code 2.0.0 line; CLI package versioned independently",
+      "autoUpgrade": false,
+      "repositoryRelease": "v2.0.0-vscode",
+      "cliPackage": "@continuedev/cli",
+      "cliPackageVersion": "1.5.47"
+    },
+    "aider": {
+      "repository": "Aider-AI/aider",
+      "version": "0.86.0",
+      "commit": "a4be6ccd87ebaa59b361f3f028d116ce1761b626",
+      "license": "Apache-2.0",
+      "role": "terminal pair-programming fallback",
+      "autoUpgrade": false
+    },
+    "tabby": {
+      "repository": "TabbyML/tabby",
+      "version": "0.32.0",
+      "commit": "d4c033a138646524c545a0ead22690ef8ec05175",
+      "role": "self-hosted code completion/chat service",
+      "autoUpgrade": false,
+      "telemetryDefault": "disabled-by-PEFY"
+    },
+    "ollama": {
+      "repository": "ollama/ollama",
+      "version": "0.34.2",
+      "commit": "dfabde4539e42ba1e1eab50a3a50b88aea7958a0",
+      "license": "MIT",
+      "role": "local model runtime/provider",
+      "autoUpgrade": false
+    },
+    "codex-cli": {
+      "repository": "openai/codex",
+      "version": "0.155.1",
+      "commit": "be2951ea34f0d295ed0becf97079f92fa5f6950e",
+      "license": "Apache-2.0",
+      "role": "primary authenticated coding CLI when available",
+      "autoUpgrade": false
+    }
+  }
+}
