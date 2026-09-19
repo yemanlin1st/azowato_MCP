@@ -19,9 +19,10 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test:logic": "node scripts/validate_devfabric.mjs",
-    "qualify": "npm run typecheck && npm run test:logic && npm run test:egress && npm run test:mcp",
+    "qualify": "npm run typecheck && npm run test:logic && npm run test:egress && npm run test:mcp && npm run test:mcp-network",
     "test:egress": "node scripts/validate_egress_policy.mjs",
-    "test:mcp": "node scripts/smoke_mcp.mjs"
+    "test:mcp": "node scripts/smoke_mcp.mjs",
+    "test:mcp-network": "node scripts/network_mcp_smoke.mjs"
   },
   "packageManager": "npm@10.9.2"
 }
