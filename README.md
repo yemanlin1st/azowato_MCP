@@ -58,12 +58,15 @@ The guard stops and escalates instead of performing a blind application rollback
 ## Local validation
 
 ```bash
-npm ci
-npm run typecheck
-npm run test:logic
+npm install --ignore-scripts --no-audit --no-fund
+npm run qualify
 python scripts/rollback_guard.py
 ```
 
 ## Deploy
 
 Deploy to Vercel and connect an MCP client to `https://<deployment>/mcp`.
+
+## Qualification note
+
+`package-lock.json` is not yet committed. Until a qualified lockfile is generated and reviewed, dependency installation is not fully reproducible; keep ΩDEVFABRIC R0.1 behind the draft/preview gate and do not promote this branch directly to production.
