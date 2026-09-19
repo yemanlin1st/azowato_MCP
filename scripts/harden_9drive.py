@@ -46,7 +46,31 @@ compose.write_text(text, encoding="utf-8")
 
 pkg = json.loads(backend_pkg.read_text(encoding="utf-8"))
 pkg["license"] = "Apache-2.0"
+
+# Production runtime must not carry the Prisma CLI toolchain. Migrations are
+# a governed build/pre-deploy operation; @prisma/client remains runtime.
+prisma_cli = pkg.get("dependencies", {}).pop("prisma", None)
+if prisma_cli:
+    pkg.setdefault("devDependencies", {})["prisma"] = prisma_cli
+pkg["scripts"]["start:deploy"] = "node dist/server.js"
+
+# Same-major/current security remediations for upstream production deps.
+if "undici" in pkg.get("dependencies", {}):
+    pkg["dependencies"]["undici"] = "7.29.0"
+pkg["overrides"] = {
+    **pkg.get("overrides", {}),
+    "body-parser": "2.3.0",
+    "brace-expansion": "5.0.9",
+}
 backend_pkg.write_text(json.dumps(pkg, indent=2) + "\n", encoding="utf-8")
+
+frontend_pkg = root / "frontend/package.json"
+front = json.loads(frontend_pkg.read_text(encoding="utf-8"))
+front["overrides"] = {
+    **front.get("overrides", {}),
+    "brace-expansion": "5.0.9",
+}
+frontend_pkg.write_text(json.dumps(front, indent=2) + "\n", encoding="utf-8")
 
 manifest = {
     "profile": "PEFY-9DRIVE-HARDENED-R0.1",
@@ -57,6 +81,12 @@ manifest = {
     "defaultStorageMode": "s3-compatible-first",
     "googleDriveActivation": "disabled-until-dedicated-account-and-policy-review",
     "publicSharing": "policy-gated",
+    "productionPrismaCli": False,
+    "securityOverrides": {
+        "body-parser": "2.3.0",
+        "brace-expansion": "5.0.9",
+        "undici": "7.29.0"
+    },
 }
 (root / "PEFY_HARDENING.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
