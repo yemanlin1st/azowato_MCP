@@ -1,35 +1,26 @@
-# PEFY-GG Experience & Media Swarm MCP
+# PEFY-GG Meta Supra Capability Mesh MCP
 
-Remote, read-only MCP control plane for the PEFY-GG Experience & Media Swarm OS.
+Remote, read-only governed MCP control plane for the PEFY-GG Meta Supra Capability Mesh and ΩDEVFABRIC.
 
 ## Endpoints
+
+**Control-plane version:** 2.1.0
+
 
 - `GET /api/health`
 - MCP Streamable HTTP: `/mcp`
 
 ## Tools
 
-- `system_status`
-- `search`
-- `fetch`
-- `experience_score`
-- `release_gate`
-- `media_route`
-- `devfabric_status`
-- `local_install_plan`
-
-## ΩDEVFABRIC R0.1
-
-The control plane now exposes a read-only registry and installation planner for the governed development stack:
-
-- Connected/core adapters: GitHub, Context7, Figma, Vercel, Neon/PostgreSQL, Exa.
-- Qualified extension targets: Playwright, Sentry, Firecrawl, Brave Search, Sequential Thinking, SkillUI.
-- Playwright is dual-mode by design: CLI + SKILLS for coding-agent throughput; MCP for persistent exploratory browser workflows.
-- Firecrawl can start with the vendor-hosted keyless MCP endpoint for bounded basic retrieval, then move to OAuth/API-key mode for the full tool set.
-- Credentialed providers must use client/secret-manager injection. Secrets must never be committed, embedded in MCP URLs, or pasted into agent prompts/chat.
-- Production promotion requires version pinning, least privilege, tool allowlists, sandbox qualification, audit evidence, rollback and kill-switch controls.
-
-`local_install_plan` returns a client-specific bootstrap/qualification plan for `codex`, `vscode`, or a generic MCP host. It deliberately returns secret variable names only, never secret values.
+- `capability_status` — governed capability inventory and risk tiers.
+- `capability_catalog` — capability groups with primary/advisory allocation.
+- `route_mission` — mission routing by domain, risk tier and controlled loop.
+- `compile_prompt_contract` — machine-readable Master Mission Contract skeleton.
+- `quality_gate` — mandatory control evaluation with GO / conditional result.
+- `select_councils` — proportional counsellor/council challenge selection.
+- `devfabric_status` — ΩDEVFABRIC provider registry and security posture.
+- `local_install_plan` — secret-safe MCP/CLI bootstrap and qualification plan.
+- `loop_catalog` — controlled execution-loop registry.
 
 ## Security
 
