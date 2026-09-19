@@ -11,6 +11,8 @@ const required = [
   "brave/brave-search-mcp-server",
   "modelcontextprotocol/servers/src/sequentialthinking",
   "amaancoderx/skillui",
+  "garrytan/gstack",
+  "a6b3a57512ca6d5c6aa5b68f74f736195021f96e",
   "Never place API keys",
   "versionPinned",
   "killSwitchDefined"
