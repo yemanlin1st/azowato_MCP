@@ -29,6 +29,14 @@ jobs:
       - name: Install dependencies without lifecycle scripts
         run: npm install --ignore-scripts --no-audit --no-fund
 
+      - name: Upload generated lockfile evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: qualified-package-lock
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 7
+
       - name: TypeScript qualification
         run: npm run typecheck
 
