@@ -40,7 +40,9 @@
       "sandboxRequired": true,
       "preferredSandbox": "SWE-ReX/Docker/Podman/bubblewrap",
       "promotionPolicy": "manual-review-and-requalification",
-      "autoUpgrade": false
+      "autoUpgrade": false,
+      "commitSignatureVerified": true,
+      "signatureVerifiedAt": "2026-07-23T03:12:02Z"
     },
     "swe-rex": {
       "repository": "SWE-agent/SWE-ReX",
@@ -49,7 +51,9 @@
       "license": "MIT",
       "role": "sandboxed execution substrate",
       "promotionPolicy": "manual-review-and-requalification",
-      "autoUpgrade": false
+      "autoUpgrade": false,
+      "commitSignatureVerified": true,
+      "signatureVerifiedAt": "2025-08-14T01:12:49Z"
     },
     "openrag": {
       "repository": "langflow-ai/openrag",
