@@ -84,13 +84,39 @@ The PEFY activation profile is deliberately conservative:
 
 Disposable installation qualification is complete: the exact pinned gstack commit installs successfully into an isolated Codex home on GitHub Actions, preserves the sovereign configuration, passes egress-grant verification and targeted upstream security/config tests, and publishes evidence. Permanent workstation/Codex activation remains pending until an authorized machine or authenticated Codex Tasks environment is reachable. The `local_install_plan` MCP tool returns the pinned permanent-install sequence.
 
+## mini-SWE-agent + SWE-ReX governed integration
+
+ΩDEVFABRIC uses **mini-SWE-agent** as the default bounded software-engineering execution adapter rather than the larger original SWE-agent scaffold. Upstream itself recommends mini-SWE-agent as the default for simpler, faster and more stable workflows.
+
+Qualified pins:
+
+- mini-SWE-agent: v`2.4.6`, commit `a83fcae82d2a08f0ee0c688f9d137b3566c097f8`, verified signature, MIT;
+- SWE-ReX: v`1.4.0`, commit `f802b3e14d82aa4c13291d2fda5bd4fd48f36f91`, verified signature, MIT.
+
+Governed execution posture:
+
+- sandbox-first; `SwerexDockerEnvironment` is the preferred adapter;
+- autonomous host-local shell execution is denied by default;
+- model-provider credentials are mission-scoped and injected from a secret manager only;
+- no standing model credential is stored in repository, prompts, global config or qualification evidence;
+- code writes are limited to feature branches/disposable worktrees;
+- destructive commands, production deployment, merge and external communication remain human-gated;
+- step/cost/time limits and trajectory evidence are required for live autonomous runs.
+
+Qualification is **GREEN**: exact-source install, dependency consistency, CLI/import checks, a deterministic two-step `DefaultAgent` execution loop, trajectory verification, sandbox-adapter resolution and source compilation all passed with **0 external model calls**.
+
+The remote provider-neutral preview also exposes the pinned mini-SWE-agent/SWE-ReX capability through `devfabric_status` and passed its authenticated startup self-test.
+
+Permanent workstation activation remains access-dependent. Once an authorized Remote Desktop machine or authenticated Codex Tasks runtime is reachable, `local_install_plan` provides the exact pinned installation sequence.
+
 ## R0.1 gate status
 
 - Core qualification: **GREEN** in GitHub Actions, including TypeScript, dependency audit, reproducibility and rollback fail-closed checks.
 - MCP boundary + real network `initialize/tools-list` smoke: **GREEN**; both sessionful and stateless Streamable HTTP transport are accepted while the exact nine-tool registry is enforced.
 - Security/egress qualification: **GREEN** under the default-deny policy.
 - gstack pinned-install qualification: **GREEN** on a disposable Codex home at upstream v`1.87.4.0` / `a6b3a575...`.
-- Provider-neutral remote preview: **GREEN** on a private Railway preview deployment. Health returned HTTP 200/ready; authenticated initialize returned 200; stateless tools/list returned 200 with all nine governed tools.
+- mini-SWE-agent + SWE-ReX qualification: **GREEN** at v`2.4.6` / `a83fcae...` and v`1.4.0` / `f802b3e...`; deterministic real agent loop passed with zero external model calls.
+- Provider-neutral remote preview: **GREEN** on private Railway deployment `3c70c804-e4c9-4c8c-ab6d-6d1d7cf82d46` at runtime SHA `1ed10b557...`. Health is 200/ready; unauthenticated MCP is 401; authenticated initialize/tools-list are 200; `devfabric_status` confirms the pinned mini-SWE-agent and SWE-ReX runtime contracts.
 - Vercel target-provider preview: **BLOCKED** because repository deployment credentials are not configured and the connected direct-deploy operation is currently unavailable server-side.
 - Permanent local gstack activation: **BLOCKED** only by runtime reachability/authentication (no authorized Remote Desktop device online; Codex Tasks not authenticated).
 - Production promotion: **BLOCKED intentionally** until the Vercel-specific preview gate is green. Production has not been changed.
