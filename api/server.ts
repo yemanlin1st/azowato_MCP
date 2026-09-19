@@ -392,6 +392,107 @@ function buildLocalInstallPlan(client: "codex" | "vscode" | "generic", include: 
     });
   }
 
+
+  if (wanted.has("mini-swe-agent")) {
+    steps.push({
+      id: "mini-swe-agent",
+      classification: "sandboxed-agent",
+      commands: [
+        "python -m pip install 'mini-swe-agent==2.4.6'",
+        "mini --help",
+      ],
+      executionRule: "Do not use LocalEnvironment against a privileged host for autonomous tasks. Prefer SWE-ReX/Docker/Podman/bubblewrap and an isolated git worktree.",
+    });
+  }
+
+  if (wanted.has("swe-rex")) {
+    steps.push({
+      id: "swe-rex",
+      classification: "sandbox-runtime",
+      commands: ["python -m pip install 'swe-rex==1.4.0'", "swerex-remote --help"],
+      activationRule: "Remote/cloud backends remain disabled until their target credentials and network policies are approved.",
+    });
+  }
+
+  if (wanted.has("codex-cli")) {
+    steps.push({
+      id: "codex-cli",
+      classification: "coding-cli",
+      command: "npm install -g @openai/codex@0.155.1",
+      qualification: ["codex --version", "authenticate interactively with ChatGPT or inject an approved API credential at runtime"],
+      activationRule: "Production/deployment/destructive writes remain human-gated.",
+    });
+  }
+
+  if (wanted.has("aider")) {
+    steps.push({
+      id: "aider",
+      classification: "coding-cli-fallback",
+      commands: ["python -m pip install 'aider-chat==0.86.0'", "aider --version"],
+      activationRule: "Use explicit model routing; disable uncontrolled git commits in governed automation.",
+    });
+  }
+
+  if (wanted.has("continue")) {
+    steps.push({
+      id: "continue",
+      classification: "compatibility-cli-ide",
+      commands: ["npm install -g @continuedev/cli@2.0.0", "cn --help"],
+      activationRule: "Treat as final compatibility release; do not build new strategic dependencies on the read-only upstream.",
+    });
+  }
+
+  if (wanted.has("openrag")) {
+    steps.push({
+      id: "openrag",
+      classification: "stateful-rag-service",
+      source: "langflow-ai/openrag@v0.7.1",
+      commands: ["python3.13 -m pip install 'openrag==0.7.1'", "openrag --help"],
+      serviceRule: "Production deployment requires pinned OpenSearch/Langflow images, persistent volumes, encryption/session keys, authenticated /mcp, backup/restore, and model routing. Prefer Ollama for local/private workloads when sufficient.",
+    });
+  }
+
+  if (wanted.has("nine-drive")) {
+    steps.push({
+      id: "nine-drive",
+      classification: "stateful-storage-gateway",
+      source: "zenhosta/9drive@811d4a2137538b73abb43d195d7bf452e01b0c58",
+      qualification: ["backend npm ci/build", "frontend npm ci/build", "docker compose config with generated non-default secrets", "MySQL migration + /health smoke"],
+      activationRule: "Disable upstream in-app auto-update path; no placeholder MySQL/JWT/encryption credentials; OAuth/S3 credentials via vault only.",
+    });
+  }
+
+  if (wanted.has("ollama")) {
+    steps.push({
+      id: "ollama",
+      classification: "local-model-runtime",
+      source: "ollama/ollama@v0.34.2",
+      qualification: ["ollama --version", "private /api/tags health smoke"],
+      activationRule: "Bind to loopback/private network; models are allowlisted and pulled explicitly.",
+    });
+  }
+
+  if (wanted.has("tabby")) {
+    steps.push({
+      id: "tabby",
+      classification: "self-hosted-code-service",
+      source: "TabbyML/tabby@v0.32.0",
+      environment: { TABBY_DISABLE_USAGE_COLLECTION: "1" },
+      qualification: ["container/binary starts", "GET /v1/health returns 200"],
+      activationRule: "Private network by default; GPU optional; public exposure requires auth, TLS and rate limits.",
+    });
+  }
+
+  if (wanted.has("three-cx")) {
+    steps.push({
+      id: "three-cx",
+      classification: "telephony-api-adapter",
+      prerequisites: ["3CX v20 system", "eligible license/API access", "least-privilege service principal", "PBX URL"],
+      secretInjection: "Client/API credentials via secret manager only.",
+      activationRule: "Read-only discovery first. Configuration writes, routing changes, recordings/call-content access and external communications require explicit T4 approval.",
+    });
+  }
+
   return {
     client,
     prerequisites: ["Node.js 22 LTS preferred", "npx available", "MCP-aware client/runtime", "secret manager for credentialed providers"],
