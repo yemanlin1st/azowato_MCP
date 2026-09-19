@@ -24,7 +24,11 @@
           "egress grants verification",
           "targeted upstream security/config tests"
         ],
-        "status": "pending-evidence"
+        "status": "qualified",
+        "qualifiedAt": "2026-09-19",
+        "workflowRunId": 35442637100,
+        "workflowRunNumber": 9,
+        "qualifiedControlPlaneSha": "685320273a3816ee9620f8a7d1b088d03e4ed08e"
       }
     }
   }
