@@ -32,10 +32,10 @@ const LOOPS = {
 
 const CAPABILITY_GROUPS = [
   { id: "design", primary: "Figma/Canva under Impeccable and PEFY brand gates", advisory: ["Adobe Express", "HeyGen", "Open-Sora"] },
-  { id: "software", primary: "GitHub + Context7 + Vercel + Neon/PostgreSQL controlled build", advisory: ["gstack", "mini-SWE-agent", "SWE-ReX", "Playwright", "Sentry", "Firecrawl", "Brave Search", "Exa", "SkillUI", "Supabase", "Base44"] },
+  { id: "software", primary: "Codex CLI + mini-SWE-agent + GitHub + Context7 controlled build", advisory: ["gstack", "Aider", "Continue", "Tabby", "Ollama", "SWE-ReX", "Playwright", "Sentry", "Firecrawl", "Brave Search", "Exa", "SkillUI", "Vercel", "Railway", "Neon/PostgreSQL", "Supabase", "Base44"] },
   { id: "analytics", primary: "Data Analytics skill family", advisory: ["Airtable", "Google Sheets", "Postgres"] },
   { id: "documents", primary: "Artifact capability selected by output format", advisory: ["Google Drive", "Canva", "OpenAI templates"] },
-  { id: "knowledge", primary: "RMS + OpenRAG + OMNIA Core Store under tenant/provenance policy", advisory: ["MemPalace", "Notion", "Google Drive", "OpenSearch", "Docling"] },
+  { id: "knowledge", primary: "OpenRAG + RMS + OMNIA Core Store under tenant/provenance policy", advisory: ["Context7", "Exa", "MemPalace", "Notion", "Google Drive", "9drive", "OpenSearch", "Docling", "Ollama"] },
   { id: "storage", primary: "ΩSTORAGE provider-neutral control plane", advisory: ["hardened 9drive", "Google Drive", "S3/MinIO/R2/B2", "Azure Blob", "IBM COS"] },
   { id: "communications", primary: "Native connector under read-first rule", advisory: ["Gmail", "Calendar", "Contacts"] },
   { id: "governance", primary: "Native PEFY governed loop", advisory: ["Plugin Management", "Skillspector", "Councils"] },
@@ -170,6 +170,85 @@ const DEVFABRIC = {
         workspaceMount: "bounded",
         network: "default-deny-or-mission-allowlist",
       },
+    },
+    {
+      id: "codex-cli",
+      state: "authentication-required-for-permanent-runtime",
+      mode: "primary coding CLI when authenticated; sandbox and approval policies still apply",
+      official: "openai/codex",
+      version: "0.155.1",
+      commit: "be2951ea34f0d295ed0becf97079f92fa5f6950e",
+      license: "Apache-2.0",
+      secrets: ["ChatGPT sign-in or secret-managed OpenAI API credential"],
+    },
+    {
+      id: "aider",
+      state: "runtime-qualification-required",
+      mode: "terminal pair-programming fallback with governed git behavior",
+      official: "Aider-AI/aider",
+      version: "0.86.0",
+      commit: "a4be6ccd87ebaa59b361f3f028d116ce1761b626",
+      license: "Apache-2.0",
+      secrets: ["model-provider credential when cloud model is selected"],
+    },
+    {
+      id: "continue",
+      state: "compatibility-layer",
+      mode: "IDE/CLI compatibility layer; upstream repository is read-only after final 2.0.0 release",
+      official: "continuedev/continue",
+      version: "2.0.0",
+      commit: "03b05ef60c378ff06f9e39ada2e22c95fe9ef6ad",
+      license: "Apache-2.0",
+      secrets: ["optional Continue API key for hosted features"],
+    },
+    {
+      id: "openrag",
+      state: "hardened-service-qualification-required",
+      mode: "self-hosted RAG/search plane with authenticated MCP and PEFY hardening overlay",
+      official: "langflow-ai/openrag",
+      version: "0.5.0+snapshot",
+      releaseBaseline: "0.7.1",
+      commit: "dbb6f9e442fe90b2a60414bf2eb6d4c83d1dd30d",
+      license: "Apache-2.0",
+      verifiedCommitSignature: true,
+      secrets: ["OpenRAG encryption/session keys and selected model/provider credentials"],
+    },
+    {
+      id: "9drive",
+      state: "hardened-service-qualification-required",
+      mode: "Google Drive + S3-compatible gateway; stock runtime prohibited; PEFY overlay mandatory",
+      official: "zenhosta/9drive",
+      version: "commit-pinned",
+      commit: "811d4a2137538b73abb43d195d7bf452e01b0c58",
+      license: "Apache-2.0",
+      verifiedCommitSignature: false,
+      secrets: ["MySQL, JWT, encryption, Google OAuth and/or S3 credentials"],
+    },
+    {
+      id: "ollama",
+      state: "service-qualification-required",
+      mode: "local/private model runtime; loopback/private-network only",
+      official: "ollama/ollama",
+      version: "0.34.2",
+      commit: "dfabde4539e42ba1e1eab50a3a50b88aea7958a0",
+      license: "MIT",
+      secrets: [],
+    },
+    {
+      id: "tabby",
+      state: "service-qualification-required",
+      mode: "self-hosted code completion/chat service with usage collection disabled",
+      official: "TabbyML/tabby",
+      version: "0.32.0",
+      commit: "d4c033a138646524c545a0ead22690ef8ec05175",
+      secrets: [],
+    },
+    {
+      id: "three-cx",
+      state: "credentials-and-license-required",
+      mode: "3CX v20 Configuration API adapter; read-first and T4 write gates",
+      official: "3CX Configuration API",
+      secrets: ["PBX URL and least-privilege API/service-principal credentials"],
     },
   ],
   securityBaseline: [
@@ -359,61 +438,6 @@ function buildLocalInstallPlan(client: "codex" | "vscode" | "generic", include: 
   }
 
 
-  if (wanted.has("mini-swe-agent") || wanted.has("swe-rex")) {
-    steps.push({
-      id: "mini-swe-agent",
-      classification: "pinned-software-engineering-agent",
-      source: "https://github.com/SWE-agent/mini-swe-agent.git",
-      version: "2.4.6",
-      commit: "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
-      sandbox: {
-        preferred: "SWE-ReX Docker",
-        source: "https://github.com/SWE-agent/SWE-ReX.git",
-        version: "1.4.0",
-        commit: "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
-      },
-      commands: [
-        'SWE_DIR="$HOME/.local/share/pefy/vendor/mini-swe-agent-2.4.6"',
-        'REX_DIR="$HOME/.local/share/pefy/vendor/swe-rex-1.4.0"',
-        'python3 -m venv "$HOME/.local/share/pefy/venvs/mini-swe-agent-2.4.6"',
-        '. "$HOME/.local/share/pefy/venvs/mini-swe-agent-2.4.6/bin/activate"',
-        'git clone --no-tags https://github.com/SWE-agent/mini-swe-agent.git "$SWE_DIR"',
-        'git -C "$SWE_DIR" checkout --detach a83fcae82d2a08f0ee0c688f9d137b3566c097f8',
-        'git clone --no-tags https://github.com/SWE-agent/SWE-ReX.git "$REX_DIR"',
-        'git -C "$REX_DIR" checkout --detach f802b3e14d82aa4c13291d2fda5bd4fd48f36f91',
-        'python -m pip install "$REX_DIR" "$SWE_DIR"',
-        'python -m pip check',
-        'mini --help',
-      ],
-      runtimeRule: "Do not run autonomous tasks on the host-local environment. Use swerex_docker/docker/bubblewrap/contree or an already-isolated disposable CI runtime.",
-      modelRule: "Inject model credentials per mission from a secret manager; do not persist them in mini-SWE-agent global config, repository files, prompts or logs.",
-      writeRule: "Use a dedicated feature branch or disposable worktree. Production deploy, merge, destructive commands and external communications remain human-gated.",
-      qualification: ["exact commit and version", "license/signature", "agent-loop smoke", "sandbox adapter", "dependency consistency", "trajectory evidence"],
-    });
-  }
-
-
-  if (wanted.has("mini-swe-agent")) {
-    steps.push({
-      id: "mini-swe-agent",
-      classification: "sandboxed-agent",
-      commands: [
-        "python -m pip install 'mini-swe-agent==2.4.6'",
-        "mini --help",
-      ],
-      executionRule: "Do not use LocalEnvironment against a privileged host for autonomous tasks. Prefer SWE-ReX/Docker/Podman/bubblewrap and an isolated git worktree.",
-    });
-  }
-
-  if (wanted.has("swe-rex")) {
-    steps.push({
-      id: "swe-rex",
-      classification: "sandbox-runtime",
-      commands: ["python -m pip install 'swe-rex==1.4.0'", "swerex-remote --help"],
-      activationRule: "Remote/cloud backends remain disabled until their target credentials and network policies are approved.",
-    });
-  }
-
   if (wanted.has("codex-cli")) {
     steps.push({
       id: "codex-cli",
@@ -439,26 +463,6 @@ function buildLocalInstallPlan(client: "codex" | "vscode" | "generic", include: 
       classification: "compatibility-cli-ide",
       commands: ["npm install -g @continuedev/cli@2.0.0", "cn --help"],
       activationRule: "Treat as final compatibility release; do not build new strategic dependencies on the read-only upstream.",
-    });
-  }
-
-  if (wanted.has("openrag")) {
-    steps.push({
-      id: "openrag",
-      classification: "stateful-rag-service",
-      source: "langflow-ai/openrag@v0.7.1",
-      commands: ["python3.13 -m pip install 'openrag==0.7.1'", "openrag --help"],
-      serviceRule: "Production deployment requires pinned OpenSearch/Langflow images, persistent volumes, encryption/session keys, authenticated /mcp, backup/restore, and model routing. Prefer Ollama for local/private workloads when sufficient.",
-    });
-  }
-
-  if (wanted.has("nine-drive")) {
-    steps.push({
-      id: "nine-drive",
-      classification: "stateful-storage-gateway",
-      source: "zenhosta/9drive@811d4a2137538b73abb43d195d7bf452e01b0c58",
-      qualification: ["backend npm ci/build", "frontend npm ci/build", "docker compose config with generated non-default secrets", "MySQL migration + /health smoke"],
-      activationRule: "Disable upstream in-app auto-update path; no placeholder MySQL/JWT/encryption credentials; OAuth/S3 credentials via vault only.",
     });
   }
 
@@ -596,7 +600,7 @@ const mcp = createMcpHandler((server) => {
 
   server.tool("local_install_plan", "Generate a secret-safe local MCP/CLI installation and qualification plan for the development fabric.", {
     client: z.enum(["codex", "vscode", "generic"]).default("generic"),
-    include: z.array(z.enum(["playwright", "sentry", "firecrawl", "brave-search", "sequential-thinking", "skillui", "gstack", "mini-swe-agent", "swe-rex"])).default([]),
+    include: z.array(z.enum(["playwright", "sentry", "firecrawl", "brave-search", "sequential-thinking", "skillui", "gstack", "mini-swe-agent", "swe-rex", "codex-cli", "aider", "continue", "openrag", "9drive", "ollama", "tabby", "three-cx"])).default([]),
   }, async ({ client, include }) => asText(buildLocalInstallPlan(client, include)));
 
   server.tool("loop_catalog", "Return controlled execution loops and state-machine sequences.", { loop: z.string().optional() }, async ({ loop }) => {
