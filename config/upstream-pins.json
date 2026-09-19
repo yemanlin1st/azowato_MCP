@@ -85,12 +85,15 @@
     },
     "continue": {
       "repository": "continuedev/continue",
-      "version": "2.0.0",
+      "version": "2.0.0-vscode",
       "commit": "03b05ef60c378ff06f9e39ada2e22c95fe9ef6ad",
       "license": "Apache-2.0",
       "role": "IDE/CLI compatibility agent",
-      "lifecycle": "upstream repository read-only/final 2.0.0",
-      "autoUpgrade": false
+      "lifecycle": "repository compatibility/final VS Code 2.0.0 line; CLI package versioned independently",
+      "autoUpgrade": false,
+      "repositoryRelease": "v2.0.0-vscode",
+      "cliPackage": "@continuedev/cli",
+      "cliPackageVersion": "1.5.47"
     },
     "aider": {
       "repository": "Aider-AI/aider",
