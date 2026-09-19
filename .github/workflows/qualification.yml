@@ -27,7 +27,7 @@ jobs:
           node-version: "22"
 
       - name: Install dependencies without lifecycle scripts
-        run: npm install --ignore-scripts --no-audit --no-fund
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Upload generated lockfile evidence
         uses: actions/upload-artifact@v4
@@ -58,9 +58,8 @@ jobs:
       - name: Production dependency audit
         run: npm audit --omit=dev --audit-level=high
 
-      - name: Reproducibility warning
+      - name: Reproducibility contract
         shell: bash
         run: |
-          if [ ! -f package-lock.json ]; then
-            echo "::warning::package-lock.json is missing. Keep this PR gated until a qualified lockfile is committed."
-          fi
+          test -f package-lock.json
+          node -e 'const p=require("./package-lock.json"); if(p.name!=="pefy-meta-supra-capability-mesh-mcp" || p.version!=="2.1.0" || p.lockfileVersion!==3) process.exit(1)'
