@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "1.0",
+  "observedAt": "2026-09-19",
+  "gate": "R0.1 Preview Qualification",
+  "controlPlane": {
+    "repository": "yemanlin1st/azowato_MCP",
+    "branch": "feat/omega-devfabric-r01-20260919",
+    "runtimeQualifiedSha": "685320273a3816ee9620f8a7d1b088d03e4ed08e",
+    "qualificationRun": {
+      "id": 35442637030,
+      "number": 34,
+      "conclusion": "success"
+    },
+    "gstackQualificationRun": {
+      "id": 35442637100,
+      "number": 9,
+      "conclusion": "success"
+    }
+  },
+  "gstack": {
+    "upstream": "garrytan/gstack",
+    "version": "1.87.4.0",
+    "commit": "a6b3a57512ca6d5c6aa5b68f74f736195021f96e",
+    "commitSignatureVerified": true,
+    "license": "MIT",
+    "disposableCodexInstall": "pass",
+    "sovereignConfigVerification": "pass",
+    "upstreamSecurityConfigTests": "pass"
+  },
+  "providerNeutralRemotePreview": {
+    "provider": "Railway",
+    "isolation": "private dedicated preview project",
+    "projectName": "pefy-devfabric-r01-preview",
+    "serviceName": "omega-devfabric-r01-preview",
+    "deploymentId": "4a56b73a-619e-40b5-b139-67a7de304ef1",
+    "deployedSha": "685320273a3816ee9620f8a7d1b088d03e4ed08e",
+    "branch": "feat/omega-devfabric-r01-20260919",
+    "deploymentStatus": "SUCCESS",
+    "health": {
+      "http": 200,
+      "status": "ready",
+      "service": "PEFY-GG Meta Supra Capability Mesh MCP"
+    },
+    "mcp": {
+      "authenticatedInitializeHttp": 200,
+      "transportMode": "stateless",
+      "sessionPresent": false,
+      "toolsListHttp": 200,
+      "toolCount": 9,
+      "tools": [
+        "capability_status",
+        "capability_catalog",
+        "route_mission",
+        "compile_prompt_contract",
+        "quality_gate",
+        "select_councils",
+        "devfabric_status",
+        "local_install_plan",
+        "loop_catalog"
+      ]
+    },
+    "unauthenticatedBoundaryHttp": 401
+  },
+  "targetProvider": {
+    "provider": "Vercel",
+    "previewStatus": "blocked",
+    "reason": "GitHub deployment credentials are not configured and connected direct-deploy operation is unavailable server-side",
+    "productionPromotion": "blocked-until-vercel-preview-green"
+  },
+  "permanentLocalActivation": {
+    "status": "blocked",
+    "reason": "No authorized Remote Desktop device is online and Codex Tasks is not authenticated"
+  },
+  "productionChanged": false
+}
