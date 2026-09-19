@@ -92,7 +92,42 @@ try {
   ];
   assert.deepEqual(names, expected);
 
-  console.log(JSON.stringify({networkPreview:"PASS",endpoint:"loopback-ephemeral",transportMode:session?"stateful-session":"stateless",sessionPresent:Boolean(session),toolCount:names.length,tools:names},null,2));
+  const statusResponse = await fetch(endpoint, {
+    method: "POST",
+    headers: listHeaders,
+    body: JSON.stringify({jsonrpc:"2.0",id:3,method:"tools/call",params:{name:"devfabric_status",arguments:{}}})
+  });
+  assert.equal(statusResponse.status, 200);
+  const statusRaw = await statusResponse.text();
+  const statusJsonText = statusRaw.split("\n")
+    .filter((line) => line.startsWith("data:"))
+    .map((line) => line.slice(5).trim())
+    .join("") || statusRaw;
+  const statusPayload = JSON.parse(statusJsonText);
+  const textContent = statusPayload?.result?.content?.find((item)=>item.type==="text")?.text;
+  assert.ok(textContent, "devfabric_status text content missing");
+  const devfabric = JSON.parse(textContent);
+  const mini = devfabric.extensions.find((item)=>item.id==="mini-swe-agent");
+  const rex = devfabric.extensions.find((item)=>item.id==="swe-rex");
+  assert.equal(mini?.version, "2.4.6");
+  assert.equal(mini?.commit, "a83fcae82d2a08f0ee0c688f9d137b3566c097f8");
+  assert.equal(mini?.activationProfile?.hostLocalAutonomy, false);
+  assert.equal(rex?.version, "1.4.0");
+  assert.equal(rex?.commit, "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91");
+  assert.equal(rex?.activationProfile?.privilegedContainers, false);
+
+  console.log(JSON.stringify({
+    networkPreview:"PASS",
+    endpoint:"loopback-ephemeral",
+    transportMode:session?"stateful-session":"stateless",
+    sessionPresent:Boolean(session),
+    toolCount:names.length,
+    tools:names,
+    devfabricCapability:{
+      miniSWEAgent:{version:mini.version,commit:mini.commit},
+      sweRex:{version:rex.version,commit:rex.commit}
+    }
+  },null,2));
 } finally {
   await new Promise((resolve) => httpServer.close(resolve));
   process.exit(0);
