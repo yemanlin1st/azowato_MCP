@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0",
+  "mode": "default-deny",
+  "observedAt": "2026-09-19",
+  "principles": [
+    "No automatic third-party egress without an explicit capability grant.",
+    "Credentials are injected by secret managers and never encoded in URLs, prompts, logs or source.",
+    "User-directed browser targets are mission-scoped and are not converted into standing allowlist entries."
+  ],
+  "capabilities": {
+    "gstack": {
+      "automaticRuntimeEgress": "deny",
+      "telemetry": "off",
+      "updateCheck": false,
+      "autoUpgrade": false,
+      "codexReviews": "disabled",
+      "artifactsSyncMode": "off",
+      "pairAgent": "off",
+      "memorableRecall": "off",
+      "transcriptIngestMode": "off",
+      "installBootstrapAllowlist": [
+        "github.com",
+        "registry.npmjs.org"
+      ],
+      "browserTargetPolicy": "per-mission explicit target authorization",
+      "note": "gstack egress ledger is forensic evidence, not a network firewall; PEFY network policy remains authoritative."
+    },
+    "previewQualification": {
+      "allowlist": [
+        "registry.npmjs.org",
+        "api.vercel.com",
+        "vercel.com",
+        "*.vercel.app"
+      ],
+      "writeScope": "ephemeral Vercel preview deployment only",
+      "productionAliasMutation": false
+    },
+    "externalMcp": {
+      "firecrawl": [
+        "mcp.firecrawl.dev"
+      ],
+      "sentry": [
+        "mcp.sentry.dev"
+      ],
+      "braveSearch": [
+        "api.search.brave.com"
+      ],
+      "rule": "Disabled unless the mission routes to the capability and its auth/policy gate passes."
+    }
+  }
+}
