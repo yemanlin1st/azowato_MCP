@@ -68,6 +68,8 @@ backend_pkg.write_text(json.dumps(pkg, indent=2) + "\n", encoding="utf-8")
 
 frontend_pkg = root / "frontend/package.json"
 front = json.loads(frontend_pkg.read_text(encoding="utf-8"))
+if "react-router-dom" in front.get("dependencies", {}):
+    front["dependencies"]["react-router-dom"] = "7.18.3"
 front["overrides"] = {
     **front.get("overrides", {}),
     "brace-expansion": "5.0.9",
@@ -83,6 +85,7 @@ manifest = {
     "defaultStorageMode": "s3-compatible-first",
     "googleDriveActivation": "disabled-until-dedicated-account-and-policy-review",
     "publicSharing": "policy-gated",
+    "reactRouterDom": "7.18.3",
     "productionPrismaCli": False,
     "securityOverrides": {
         "body-parser": "2.3.0",
