@@ -38,7 +38,7 @@ if (egress.capabilities?.modelRuntime?.tabby?.usageCollection !== "disabled") fa
 if (egress.capabilities?.storageGateway?.nineDrive?.defaultPasswords !== "forbidden") failures.push("9drive default passwords must be forbidden");
 if (egress.capabilities?.telephony?.threeCX?.writes !== "human-approved T4") failures.push("3CX writes must remain T4");
 
-for (const id of ["mini-swe-agent","swe-rex","codex-cli","aider","continue","openrag","nine-drive","ollama","tabby","three-cx"]) {
+for (const id of ["mini-swe-agent","swe-rex","codex-cli","aider","continue","openrag","9drive","ollama","tabby","three-cx"]) {
   if (!source.includes(`id: "${id}"`)) failures.push(`server registry missing: ${id}`);
 }
 
