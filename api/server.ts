@@ -6,7 +6,7 @@ const INVENTORY = {
   connectorFunctions: 458,
   skillFamilies: 20,
   specializedSkills: 149,
-  mcpEntries: 7,
+  mcpEntries: 9,
   controlledLoops: 9,
 };
 
@@ -32,7 +32,7 @@ const LOOPS = {
 
 const CAPABILITY_GROUPS = [
   { id: "design", primary: "Figma/Canva under Impeccable and PEFY brand gates", advisory: ["Adobe Express", "HeyGen", "Open-Sora"] },
-  { id: "software", primary: "GitHub + Vercel controlled build", advisory: ["Supabase", "Neon", "Base44"] },
+  { id: "software", primary: "GitHub + Context7 + Vercel + Neon/PostgreSQL controlled build", advisory: ["Playwright", "Sentry", "Firecrawl", "Brave Search", "Exa", "SkillUI", "Supabase", "Base44"] },
   { id: "analytics", primary: "Data Analytics skill family", advisory: ["Airtable", "Google Sheets", "Postgres"] },
   { id: "documents", primary: "Artifact capability selected by output format", advisory: ["Google Drive", "Canva", "OpenAI templates"] },
   { id: "knowledge", primary: "RMS + MemPalace + OMNIA Core Store", advisory: ["Notion", "Google Drive"] },
