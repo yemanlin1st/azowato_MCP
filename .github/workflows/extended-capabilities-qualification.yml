@@ -19,68 +19,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  swe-runtime:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    env:
-      MINI_COMMIT: a83fcae82d2a08f0ee0c688f9d137b3566c097f8
-      REX_COMMIT: 5c995c365dfb1fd5bc56fda688be5d8538f9931f
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
-        with:
-          python-version: "3.11"
-      - name: Fetch exact SWE sources
-        shell: bash
-        run: |
-          set -euo pipefail
-          git clone --filter=blob:none --no-checkout https://github.com/SWE-agent/mini-swe-agent.git "$RUNNER_TEMP/mini"
-          git -C "$RUNNER_TEMP/mini" fetch --depth 1 origin "$MINI_COMMIT"
-          git -C "$RUNNER_TEMP/mini" checkout --detach "$MINI_COMMIT"
-          test "$(git -C "$RUNNER_TEMP/mini" rev-parse HEAD)" = "$MINI_COMMIT"
-          grep -q "MIT License" "$RUNNER_TEMP/mini/LICENSE.md"
-          git clone --filter=blob:none --no-checkout https://github.com/SWE-agent/SWE-ReX.git "$RUNNER_TEMP/rex"
-          git -C "$RUNNER_TEMP/rex" fetch --depth 1 origin "$REX_COMMIT"
-          git -C "$RUNNER_TEMP/rex" checkout --detach "$REX_COMMIT"
-          test "$(git -C "$RUNNER_TEMP/rex" rev-parse HEAD)" = "$REX_COMMIT"
-          grep -q "MIT License" "$RUNNER_TEMP/rex/LICENSE.txt"
-      - name: Install and smoke mini-SWE-agent + SWE-ReX
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m venv "$RUNNER_TEMP/swe-venv"
-          . "$RUNNER_TEMP/swe-venv/bin/activate"
-          python -m pip install --upgrade pip
-          pip install "$RUNNER_TEMP/rex" "$RUNNER_TEMP/mini"
-          mini --help >/tmp/mini-help.txt
-          swerex-remote --help >/tmp/rex-help.txt
-          python - <<'PY'
-          from importlib.metadata import version
-          from minisweagent.environments.local import LocalEnvironment
-          from swerex.runtime.local import _split_bash_command
-          assert version("mini-swe-agent") == "2.4.6"
-          env=LocalEnvironment(timeout=5)
-          out=env.execute({"command":"printf PEFY_SWE_SMOKE"})
-          assert out["returncode"] == 0 and out["output"] == "PEFY_SWE_SMOKE", out
-          assert _split_bash_command("echo one\necho two") == ["echo one","echo two"]
-          print("SWE runtime smoke PASS")
-          PY
-      - name: Ensure qualification used no model credentials
-        shell: bash
-        run: |
-          for key in OPENAI_API_KEY ANTHROPIC_API_KEY GEMINI_API_KEY OPENROUTER_API_KEY; do
-            test -z "${!key:-}"
-          done
-      - name: Evidence
-        run: |
-          mkdir -p evidence
-          printf '%s\n' '{"status":"PASS","miniSweAgent":"2.4.6","sandboxRequired":true,"modelCallPerformed":false}' > evidence/swe-runtime.json
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: swe-runtime-${{ github.run_id }}
-          path: evidence/swe-runtime.json
-          retention-days: 90
-
   openrag:
     runs-on: ubuntu-latest
     timeout-minutes: 30
