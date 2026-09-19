@@ -19,7 +19,8 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test:logic": "node scripts/validate_devfabric.mjs",
-    "qualify": "npm run typecheck && npm run test:logic"
+    "qualify": "npm run typecheck && npm run test:logic && npm run test:egress",
+    "test:egress": "node scripts/validate_egress_policy.mjs"
   },
   "packageManager": "npm@10.9.2"
 }
