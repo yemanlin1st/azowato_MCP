@@ -61,6 +61,8 @@ pkg["overrides"] = {
     **pkg.get("overrides", {}),
     "body-parser": "2.3.0",
     "brace-expansion": "5.0.9",
+    "qs": "6.16.0",
+    "deepmerge-ts": "8.0.0",
 }
 backend_pkg.write_text(json.dumps(pkg, indent=2) + "\n", encoding="utf-8")
 
@@ -85,6 +87,8 @@ manifest = {
     "securityOverrides": {
         "body-parser": "2.3.0",
         "brace-expansion": "5.0.9",
+        "qs": "6.16.0",
+        "deepmerge-ts": "8.0.0",
         "undici": "7.29.0"
     },
 }
