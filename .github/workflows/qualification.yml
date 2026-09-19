@@ -49,6 +49,9 @@ jobs:
       - name: MCP boundary and registry smoke test
         run: timeout 20s npm run test:mcp
 
+      - name: Full network MCP preview smoke
+        run: timeout 30s npm run test:mcp-network
+
       - name: Rollback guard fail-closed contract
         shell: bash
         run: |
