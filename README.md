@@ -66,3 +66,28 @@ Deploy to Vercel and connect an MCP client to `https://<deployment>/mcp`.
 ## Qualification note
 
 `package-lock.json` is committed and CI uses deterministic `npm ci` with lifecycle scripts disabled. ΩDEVFABRIC R0.1 remains behind the review/preview gate until final CI and deployment-preview evidence are green.
+
+## gstack governed integration
+
+ΩDEVFABRIC qualifies `garrytan/gstack` as an advisory skill suite pinned to version `1.87.4.0`, commit `a6b3a57512ca6d5c6aa5b68f74f736195021f96e` (verified commit signature, MIT license).
+
+The PEFY activation profile is deliberately conservative:
+
+- skills are namespaced with the `gstack-` prefix;
+- solo mode only; team auto-update mode is disabled;
+- telemetry, update checks and auto-upgrade are disabled;
+- proactive auto-routing is disabled;
+- external Codex/Claude review dispatch is disabled by default;
+- artifact sync, pair-agent tunnels, Memorable recall and transcript ingestion are disabled;
+- checkpoint pushes and plan-tune hooks are disabled;
+- runtime browser targets require mission-scoped authorization.
+
+Local installation remains pending until an authorized machine or coding-agent runtime is reachable. The `local_install_plan` MCP tool returns the pinned Codex installation sequence.
+
+## R0.1 gate status
+
+- Core qualification: enforced in GitHub Actions.
+- MCP handler/auth smoke test: enforced in GitHub Actions.
+- Security/egress qualification: default-deny policy enforced in GitHub Actions.
+- Vercel preview: connector/credential gate required. GitHub currently has no Vercel deployment secrets, and the connected Vercel deploy operation is unavailable server-side.
+- Production promotion: blocked until a real preview deployment passes health and MCP boundary validation.
