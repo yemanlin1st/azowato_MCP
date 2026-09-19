@@ -30,6 +30,47 @@
         "workflowRunNumber": 9,
         "qualifiedControlPlaneSha": "685320273a3816ee9620f8a7d1b088d03e4ed08e"
       }
+    },
+    "mini-swe-agent": {
+      "repository": "SWE-agent/mini-swe-agent",
+      "version": "2.4.6",
+      "commit": "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+      "commitSignatureVerified": true,
+      "license": "MIT",
+      "upstreamRecommendation": "Default choice over full SWE-agent for simple/stable software-engineering agent workflows",
+      "executionPolicy": "sandbox-first",
+      "modelPolicy": "mission-scoped provider credentials only; no standing model secret",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false,
+      "qualification": {
+        "required": true,
+        "target": "GitHub Actions disposable Python environment",
+        "workflow": ".github/workflows/swe-agent-pinned-qualification.yml",
+        "controls": [
+          "exact upstream commit and version",
+          "license and signature verification",
+          "no model secrets during deterministic readiness smoke",
+          "actual DefaultAgent loop executes shell action and completion",
+          "trajectory/output assertions",
+          "SWE-ReX sandbox adapter import",
+          "pip dependency consistency"
+        ],
+        "status": "pending-evidence"
+      }
+    },
+    "swe-rex": {
+      "repository": "SWE-agent/SWE-ReX",
+      "version": "1.4.0",
+      "commit": "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
+      "commitSignatureVerified": true,
+      "license": "MIT",
+      "role": "preferred sandbox execution adapter for mini-SWE-agent autonomous shell work",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false,
+      "qualification": {
+        "status": "pending-evidence",
+        "workflow": ".github/workflows/swe-agent-pinned-qualification.yml"
+      }
     }
   }
 }
