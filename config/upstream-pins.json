@@ -35,45 +35,81 @@
       "repository": "SWE-agent/mini-swe-agent",
       "version": "2.4.6",
       "commit": "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
-      "commitSignatureVerified": true,
       "license": "MIT",
-      "promotionPolicy": "sandbox-first-manual-review-and-requalification",
-      "defaultExecution": "sandbox-only",
-      "hostShellAutonomy": false,
-      "status": "pending-qualification",
+      "role": "default autonomous software-engineering agent",
+      "sandboxRequired": true,
+      "preferredSandbox": "SWE-ReX/Docker/Podman/bubblewrap",
+      "promotionPolicy": "manual-review-and-requalification",
       "autoUpgrade": false
     },
     "swe-rex": {
       "repository": "SWE-agent/SWE-ReX",
       "version": "1.4.0",
       "commit": "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
-      "commitSignatureVerified": true,
       "license": "MIT",
-      "promotionPolicy": "runtime-isolation-adapter",
-      "autoUpgrade": false,
-      "status": "pending-qualification"
+      "role": "sandboxed execution substrate",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false
     },
     "openrag": {
       "repository": "langflow-ai/openrag",
-      "upstreamPackageVersion": "0.5.0",
-      "commit": "dbb6f9e442fe90b2a60414bf2eb6d4c83d1dd30d",
-      "commitSignatureVerified": true,
+      "version": "0.7.1",
+      "commit": "ba80be6d8a10081b926d897c883395f6c54f76ef",
       "license": "Apache-2.0",
-      "pinReason": "Current signed upstream commit; release tag v0.5.0 commit is unsigned.",
-      "promotionPolicy": "self-hosted-first-provider-neutral-rag",
-      "status": "pending-qualification"
+      "role": "governed RAG/search/MCP plane",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false
     },
     "9drive": {
       "repository": "zenhosta/9drive",
+      "version": "commit-pinned",
       "commit": "811d4a2137538b73abb43d195d7bf452e01b0c58",
-      "commitSignatureVerified": false,
       "license": "Apache-2.0",
-      "trustTier": "unsigned-sandbox-only",
-      "hardeningOverlayRequired": true,
-      "runtimeSelfUpdate": false,
-      "runtimeSystemMutationRoutes": false,
-      "promotionPolicy": "never-run-stock-unmodified",
-      "status": "pending-qualification"
+      "role": "multi-account Drive/S3 storage gateway",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false,
+      "upstreamRelease": false
+    },
+    "continue": {
+      "repository": "continuedev/continue",
+      "version": "2.0.0",
+      "commit": "03b05ef60c378ff06f9e39ada2e22c95fe9ef6ad",
+      "license": "Apache-2.0",
+      "role": "IDE/CLI compatibility agent",
+      "lifecycle": "upstream repository read-only/final 2.0.0",
+      "autoUpgrade": false
+    },
+    "aider": {
+      "repository": "Aider-AI/aider",
+      "version": "0.86.0",
+      "commit": "a4be6ccd87ebaa59b361f3f028d116ce1761b626",
+      "license": "Apache-2.0",
+      "role": "terminal pair-programming fallback",
+      "autoUpgrade": false
+    },
+    "tabby": {
+      "repository": "TabbyML/tabby",
+      "version": "0.32.0",
+      "commit": "d4c033a138646524c545a0ead22690ef8ec05175",
+      "role": "self-hosted code completion/chat service",
+      "autoUpgrade": false,
+      "telemetryDefault": "disabled-by-PEFY"
+    },
+    "ollama": {
+      "repository": "ollama/ollama",
+      "version": "0.34.2",
+      "commit": "dfabde4539e42ba1e1eab50a3a50b88aea7958a0",
+      "license": "MIT",
+      "role": "local model runtime/provider",
+      "autoUpgrade": false
+    },
+    "codex-cli": {
+      "repository": "openai/codex",
+      "version": "0.155.1",
+      "commit": "be2951ea34f0d295ed0becf97079f92fa5f6950e",
+      "license": "Apache-2.0",
+      "role": "primary authenticated coding CLI when available",
+      "autoUpgrade": false
     }
   }
 }
