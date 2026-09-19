@@ -84,5 +84,10 @@
         "importAndAdapterResolution": "pass"
       }
     }
+  },
+  "qualificationMirror": {
+    "sourceFeatureSha": "54993dc74ae94ccea973852b9efa7ca72edced0e",
+    "purpose": "temporary exact-feature qualification trigger; not for merge",
+    "createdAt": "2026-09-19"
   }
 }
