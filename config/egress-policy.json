@@ -46,6 +46,38 @@
         "api.search.brave.com"
       ],
       "rule": "Disabled unless the mission routes to the capability and its auth/policy gate passes."
+    },
+    "miniSWEAgent": {
+      "automaticRuntimeEgress": "deny",
+      "executionMode": "sandbox-first",
+      "localHostShell": "deny-by-default",
+      "allowedEnvironments": [
+        "swerex_docker",
+        "docker",
+        "podman-equivalent",
+        "bubblewrap",
+        "contree",
+        "ephemeral-ci-local-only"
+      ],
+      "modelProviderEgress": "mission-scoped-explicit-grant",
+      "modelSecrets": "secret-manager-injection-only",
+      "gitWrite": "feature-branch-or-disposable-worktree-only",
+      "productionDeploy": false,
+      "destructiveCommands": "human-approval-required",
+      "installBootstrapAllowlist": [
+        "github.com",
+        "pypi.org",
+        "files.pythonhosted.org"
+      ],
+      "note": "mini-SWE-agent has a bash execution surface; host-local autonomous execution is prohibited outside an already isolated disposable runtime."
+    },
+    "sweRex": {
+      "automaticRuntimeEgress": "deny",
+      "role": "sandbox/runtime isolation adapter",
+      "remoteBackends": "disabled-unless-mission-approved",
+      "privilegedContainers": false,
+      "hostDockerSocket": "deny-unless-explicitly-approved",
+      "note": "Prefer rootless/container isolation and bounded workspace mounts."
     }
   }
 }
