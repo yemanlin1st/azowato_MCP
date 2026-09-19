@@ -40,16 +40,17 @@
       "promotionPolicy": "sandbox-first-manual-review-and-requalification",
       "defaultExecution": "sandbox-only",
       "hostShellAutonomy": false,
-      "status": "pending-qualification"
+      "status": "pending-qualification",
+      "autoUpgrade": false
     },
     "swe-rex": {
       "repository": "SWE-agent/SWE-ReX",
-      "version": "pinned-main-snapshot",
-      "commit": "5c995c365dfb1fd5bc56fda688be5d8538f9931f",
+      "version": "1.4.0",
+      "commit": "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
       "commitSignatureVerified": true,
       "license": "MIT",
       "promotionPolicy": "runtime-isolation-adapter",
-      "localPrivilegedRuntime": false,
+      "autoUpgrade": false,
       "status": "pending-qualification"
     },
     "openrag": {
