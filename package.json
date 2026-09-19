@@ -23,7 +23,8 @@
     "test:egress": "node scripts/validate_egress_policy.mjs",
     "test:mcp": "node scripts/smoke_mcp.mjs",
     "test:mcp-network": "node scripts/network_mcp_smoke.mjs",
-    "start:portable": "node scripts/portable_server.mjs"
+    "start:portable": "npm start",
+    "start": "node scripts/portable_server.mjs"
   },
   "packageManager": "npm@10.9.2"
 }
