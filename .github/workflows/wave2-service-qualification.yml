@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [openrag, nine-drive, ollama, tabby, three-cx]
+        service: [ollama, tabby, three-cx]
     steps:
       - name: Checkout control plane
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
