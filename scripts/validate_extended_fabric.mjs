@@ -18,7 +18,7 @@ expectPin("mini-swe-agent", {
   license:"MIT"
 });
 expectPin("swe-rex", {
-  commit:"5c995c365dfb1fd5bc56fda688be5d8538f9931f",
+  commit:"f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
   commitSignatureVerified:true,
   license:"MIT"
 });
