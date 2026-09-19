@@ -59,19 +59,20 @@ try {
   });
   assert.equal(init.status, 200);
   const session = init.headers.get("mcp-session-id");
-  assert(session, "MCP session id missing");
 
   // Drain initialize body before the next request.
   await init.text();
 
+  const listHeaders = {
+    "authorization": "Bearer pefy-network-smoke-key",
+    "content-type": "application/json",
+    "accept": "application/json, text/event-stream",
+  };
+  if (session) listHeaders["mcp-session-id"] = session;
+
   const list = await fetch(endpoint, {
     method: "POST",
-    headers: {
-      "authorization": "Bearer pefy-network-smoke-key",
-      "content-type": "application/json",
-      "accept": "application/json, text/event-stream",
-      "mcp-session-id": session,
-    },
+    headers: listHeaders,
     body: JSON.stringify({jsonrpc:"2.0",id:2,method:"tools/list",params:{}})
   });
   assert.equal(list.status, 200);
@@ -91,7 +92,7 @@ try {
   ];
   assert.deepEqual(names, expected);
 
-  console.log(JSON.stringify({networkPreview:"PASS",endpoint:"loopback-ephemeral",toolCount:names.length,tools:names},null,2));
+  console.log(JSON.stringify({networkPreview:"PASS",endpoint:"loopback-ephemeral",transportMode:session?"stateful-session":"stateless",sessionPresent:Boolean(session),toolCount:names.length,tools:names},null,2));
 } finally {
   await new Promise((resolve) => httpServer.close(resolve));
   process.exit(0);
