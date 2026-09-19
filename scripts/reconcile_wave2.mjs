@@ -9,7 +9,7 @@ const failures = [];
 const requiredPins = {
   "mini-swe-agent":"a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
   "swe-rex":"f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
-  "openrag":"ba80be6d8a10081b926d897c883395f6c54f76ef",
+  "openrag":"dbb6f9e442fe90b2a60414bf2eb6d4c83d1dd30d",
   "9drive":"811d4a2137538b73abb43d195d7bf452e01b0c58",
   "continue":"03b05ef60c378ff06f9e39ada2e22c95fe9ef6ad",
   "aider":"a4be6ccd87ebaa59b361f3f028d116ce1761b626",
