@@ -26,9 +26,9 @@
         ],
         "status": "qualified",
         "qualifiedAt": "2026-09-19",
-        "workflowRunId": 35442637100,
-        "workflowRunNumber": 9,
-        "qualifiedControlPlaneSha": "685320273a3816ee9620f8a7d1b088d03e4ed08e"
+        "workflowRunId": 35443510203,
+        "workflowRunNumber": 19,
+        "qualifiedControlPlaneSha": "1ed10b557b6b2513ac65c257d89010bb8872569a"
       }
     },
     "mini-swe-agent": {
@@ -55,7 +55,14 @@
           "SWE-ReX sandbox adapter import",
           "pip dependency consistency"
         ],
-        "status": "pending-evidence"
+        "status": "qualified",
+        "qualifiedAt": "2026-09-19",
+        "workflowRunId": 35443510201,
+        "workflowRunNumber": 6,
+        "qualifiedControlPlaneSha": "1ed10b557b6b2513ac65c257d89010bb8872569a",
+        "deterministicAgentLoop": "pass",
+        "externalModelCalls": 0,
+        "sandboxAdapter": "SwerexDockerEnvironment"
       }
     },
     "swe-rex": {
@@ -68,8 +75,13 @@
       "promotionPolicy": "manual-review-and-requalification",
       "autoUpgrade": false,
       "qualification": {
-        "status": "pending-evidence",
-        "workflow": ".github/workflows/swe-agent-pinned-qualification.yml"
+        "status": "qualified",
+        "workflow": ".github/workflows/swe-agent-pinned-qualification.yml",
+        "qualifiedAt": "2026-09-19",
+        "workflowRunId": 35443510201,
+        "workflowRunNumber": 6,
+        "qualifiedControlPlaneSha": "1ed10b557b6b2513ac65c257d89010bb8872569a",
+        "importAndAdapterResolution": "pass"
       }
     }
   }
