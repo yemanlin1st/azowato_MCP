@@ -70,7 +70,7 @@ jobs:
               codex --version | tee /tmp/tool-help.txt
               ;;
             continue)
-              npm install -g "@continuedev/cli@2.0.0" --no-audit --no-fund
+              npm install -g "@continuedev/cli@1.5.47" --no-audit --no-fund
               cn --help >/tmp/tool-help.txt
               ;;
           esac
