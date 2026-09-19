@@ -92,12 +92,14 @@ async function previewSelfTest() {
   });
   if (init.status !== 200) throw new Error(`initialize HTTP ${init.status}`);
   const session = init.headers.get("mcp-session-id");
-  if (!session) throw new Error("initialize missing mcp-session-id");
   await init.text();
+
+  const listHeaders = { ...common };
+  if (session) listHeaders["mcp-session-id"] = session;
 
   const list = await fetch(base, {
     method: "POST",
-    headers: { ...common, "mcp-session-id": session },
+    headers: listHeaders,
     body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} })
   });
   if (list.status !== 200) throw new Error(`tools/list HTTP ${list.status}`);
@@ -124,7 +126,8 @@ async function previewSelfTest() {
     event: "PEFY_REMOTE_SELFTEST",
     status: "PASS",
     authenticatedInitialize: 200,
-    sessionPresent: true,
+    transportMode: session ? "stateful-session" : "stateless",
+    sessionPresent: Boolean(session),
     toolsList: 200,
     toolCount: names.length,
     tools: names
