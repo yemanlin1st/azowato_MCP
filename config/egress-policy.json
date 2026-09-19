@@ -49,21 +49,25 @@
     },
     "miniSWEAgent": {
       "automaticRuntimeEgress": "deny",
-      "execution": "sandbox-required",
-      "hostShellDefault": "deny",
-      "modelProviderAccess": "mission-scoped-through-secret-manager-or-ΩOmniRoute",
-      "repositoryWrite": "isolated-branch-or-disposable-clone-only",
-      "productionWrite": false,
-      "networkDefault": "deny-except-explicit-allowlist",
-      "note": "LocalEnvironment is permitted only for disposable CI smoke tests, never autonomous T3/T4 work."
+      "executionMode": "sandbox-first",
+      "localHostShell": "deny-by-default",
+      "modelProviderEgress": "mission-scoped-explicit-grant",
+      "modelSecrets": "secret-manager-injection-only",
+      "gitWrite": "feature-branch-or-disposable-worktree-only",
+      "productionDeploy": false,
+      "destructiveCommands": "human-approval-required"
     },
     "sweRex": {
       "automaticRuntimeEgress": "deny",
-      "role": "sandbox/runtime isolation adapter",
-      "remoteBackends": "disabled-unless-mission-approved",
       "privilegedContainers": false,
       "hostDockerSocket": "deny-unless-explicitly-approved",
-      "note": "Prefer rootless/container isolation and bounded workspace mounts."
+      "preferredBackends": [
+        "Docker/Podman",
+        "remote disposable sandbox",
+        "bubblewrap-class isolation where supported"
+      ],
+      "hostMounts": "read-only-by-default",
+      "credentials": "ephemeral mission-scoped only"
     },
     "sweReX": {
       "role": "sandbox-runtime-adapter",
