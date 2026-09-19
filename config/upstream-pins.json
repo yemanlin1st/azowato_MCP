@@ -37,52 +37,42 @@
       "commit": "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
       "commitSignatureVerified": true,
       "license": "MIT",
-      "upstreamRecommendation": "Default choice over full SWE-agent for simple/stable software-engineering agent workflows",
-      "executionPolicy": "sandbox-first",
-      "modelPolicy": "mission-scoped provider credentials only; no standing model secret",
-      "promotionPolicy": "manual-review-and-requalification",
-      "autoUpgrade": false,
-      "qualification": {
-        "required": true,
-        "target": "GitHub Actions disposable Python environment",
-        "workflow": ".github/workflows/swe-agent-pinned-qualification.yml",
-        "controls": [
-          "exact upstream commit and version",
-          "license and signature verification",
-          "no model secrets during deterministic readiness smoke",
-          "actual DefaultAgent loop executes shell action and completion",
-          "trajectory/output assertions",
-          "SWE-ReX sandbox adapter import",
-          "pip dependency consistency"
-        ],
-        "status": "qualified",
-        "qualifiedAt": "2026-09-19",
-        "workflowRunId": 35443510201,
-        "workflowRunNumber": 6,
-        "qualifiedControlPlaneSha": "1ed10b557b6b2513ac65c257d89010bb8872569a",
-        "deterministicAgentLoop": "pass",
-        "externalModelCalls": 0,
-        "sandboxAdapter": "SwerexDockerEnvironment"
-      }
+      "promotionPolicy": "sandbox-first-manual-review-and-requalification",
+      "defaultExecution": "sandbox-only",
+      "hostShellAutonomy": false,
+      "status": "pending-qualification"
     },
     "swe-rex": {
       "repository": "SWE-agent/SWE-ReX",
-      "version": "1.4.0",
-      "commit": "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
+      "version": "pinned-main-snapshot",
+      "commit": "5c995c365dfb1fd5bc56fda688be5d8538f9931f",
       "commitSignatureVerified": true,
       "license": "MIT",
-      "role": "preferred sandbox execution adapter for mini-SWE-agent autonomous shell work",
-      "promotionPolicy": "manual-review-and-requalification",
-      "autoUpgrade": false,
-      "qualification": {
-        "status": "qualified",
-        "workflow": ".github/workflows/swe-agent-pinned-qualification.yml",
-        "qualifiedAt": "2026-09-19",
-        "workflowRunId": 35443510201,
-        "workflowRunNumber": 6,
-        "qualifiedControlPlaneSha": "1ed10b557b6b2513ac65c257d89010bb8872569a",
-        "importAndAdapterResolution": "pass"
-      }
+      "promotionPolicy": "runtime-isolation-adapter",
+      "localPrivilegedRuntime": false,
+      "status": "pending-qualification"
+    },
+    "openrag": {
+      "repository": "langflow-ai/openrag",
+      "upstreamPackageVersion": "0.5.0",
+      "commit": "dbb6f9e442fe90b2a60414bf2eb6d4c83d1dd30d",
+      "commitSignatureVerified": true,
+      "license": "Apache-2.0",
+      "pinReason": "Current signed upstream commit; release tag v0.5.0 commit is unsigned.",
+      "promotionPolicy": "self-hosted-first-provider-neutral-rag",
+      "status": "pending-qualification"
+    },
+    "9drive": {
+      "repository": "zenhosta/9drive",
+      "commit": "811d4a2137538b73abb43d195d7bf452e01b0c58",
+      "commitSignatureVerified": false,
+      "license": "Apache-2.0",
+      "trustTier": "unsigned-sandbox-only",
+      "hardeningOverlayRequired": true,
+      "runtimeSelfUpdate": false,
+      "runtimeSystemMutationRoutes": false,
+      "promotionPolicy": "never-run-stock-unmodified",
+      "status": "pending-qualification"
     }
   }
 }
