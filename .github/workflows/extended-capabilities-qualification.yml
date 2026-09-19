@@ -63,7 +63,7 @@ jobs:
         run: |
           set -euo pipefail
           cd "$RUNNER_TEMP/openrag"
-          docker compose -f docker-compose.yml config --no-interpolate >/tmp/openrag-compose.yml
+          docker compose -f docker-compose.yml config >/tmp/openrag-compose.yml
           grep -q "opensearch:" /tmp/openrag-compose.yml
           grep -q "openrag-backend:" /tmp/openrag-compose.yml
           grep -q "openrag-frontend:" /tmp/openrag-compose.yml
