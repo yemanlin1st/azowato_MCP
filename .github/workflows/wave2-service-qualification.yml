@@ -131,17 +131,7 @@ jobs:
               ;;
 
             three-cx)
-              node - <<'NODE'
-              const fs=require("fs");
-              const e=JSON.parse(fs.readFileSync("config/egress-policy.json","utf8"));
-              const p=e.capabilities?.telephony?.threeCX;
-              if(!p) throw new Error("3CX policy missing");
-              if(p.credentials!=="required") throw new Error("3CX credentials must be required");
-              if(p.writes!=="human-approved T4") throw new Error("3CX writes must be T4");
-              if(p.nativePlugin!==false) throw new Error("Unexpected native 3CX plugin state");
-              console.log("3CX adapter contract: PASS");
-              NODE
-              ;;
+              node scripts/validate_3cx_policy.mjs              ;;
           esac
 
       - name: Emit evidence
