@@ -122,6 +122,27 @@ async function previewSelfTest() {
     throw new Error(`tools/list mismatch: ${names.join(",")}`);
   }
 
+  const statusResponse = await fetch(base, {
+    method: "POST",
+    headers: listHeaders,
+    body: JSON.stringify({ jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "devfabric_status", arguments: {} } })
+  });
+  if (statusResponse.status !== 200) throw new Error(`devfabric_status HTTP ${statusResponse.status}`);
+  const statusRaw = await statusResponse.text();
+  const statusLines = statusRaw.split("\n").filter((line) => line.startsWith("data:")).map((line) => line.slice(5).trim());
+  const statusPayload = JSON.parse(statusLines.length ? statusLines.join("") : statusRaw);
+  const statusText = statusPayload?.result?.content?.find((item) => item.type === "text")?.text;
+  if (!statusText) throw new Error("devfabric_status text content missing");
+  const devfabric = JSON.parse(statusText);
+  const mini = devfabric.extensions.find((item) => item.id === "mini-swe-agent");
+  const rex = devfabric.extensions.find((item) => item.id === "swe-rex");
+  if (mini?.version !== "2.4.6" || mini?.commit !== "a83fcae82d2a08f0ee0c688f9d137b3566c097f8" || mini?.activationProfile?.hostLocalAutonomy !== false) {
+    throw new Error("mini-SWE-agent devfabric contract mismatch");
+  }
+  if (rex?.version !== "1.4.0" || rex?.commit !== "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91" || rex?.activationProfile?.privilegedContainers !== false) {
+    throw new Error("SWE-ReX devfabric contract mismatch");
+  }
+
   console.log(JSON.stringify({
     event: "PEFY_REMOTE_SELFTEST",
     status: "PASS",
@@ -130,7 +151,11 @@ async function previewSelfTest() {
     sessionPresent: Boolean(session),
     toolsList: 200,
     toolCount: names.length,
-    tools: names
+    tools: names,
+    devfabricCapability: {
+      miniSWEAgent: { version: mini.version, commit: mini.commit },
+      sweRex: { version: rex.version, commit: rex.commit }
+    }
   }));
 }
 
