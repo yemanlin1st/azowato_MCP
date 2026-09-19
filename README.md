@@ -82,12 +82,17 @@ The PEFY activation profile is deliberately conservative:
 - checkpoint pushes and plan-tune hooks are disabled;
 - runtime browser targets require mission-scoped authorization.
 
-Local installation remains pending until an authorized machine or coding-agent runtime is reachable. The `local_install_plan` MCP tool returns the pinned Codex installation sequence.
+Disposable installation qualification is complete: the exact pinned gstack commit installs successfully into an isolated Codex home on GitHub Actions, preserves the sovereign configuration, passes egress-grant verification and targeted upstream security/config tests, and publishes evidence. Permanent workstation/Codex activation remains pending until an authorized machine or authenticated Codex Tasks environment is reachable. The `local_install_plan` MCP tool returns the pinned permanent-install sequence.
 
 ## R0.1 gate status
 
-- Core qualification: enforced in GitHub Actions.
-- MCP handler/auth smoke test: enforced in GitHub Actions.
-- Security/egress qualification: default-deny policy enforced in GitHub Actions.
-- Vercel preview: connector/credential gate required. GitHub currently has no Vercel deployment secrets, and the connected Vercel deploy operation is unavailable server-side.
-- Production promotion: blocked until a real preview deployment passes health and MCP boundary validation.
+- Core qualification: **GREEN** in GitHub Actions, including TypeScript, dependency audit, reproducibility and rollback fail-closed checks.
+- MCP boundary + real network `initialize/tools-list` smoke: **GREEN**; both sessionful and stateless Streamable HTTP transport are accepted while the exact nine-tool registry is enforced.
+- Security/egress qualification: **GREEN** under the default-deny policy.
+- gstack pinned-install qualification: **GREEN** on a disposable Codex home at upstream v`1.87.4.0` / `a6b3a575...`.
+- Provider-neutral remote preview: **GREEN** on a private Railway preview deployment. Health returned HTTP 200/ready; authenticated initialize returned 200; stateless tools/list returned 200 with all nine governed tools.
+- Vercel target-provider preview: **BLOCKED** because repository deployment credentials are not configured and the connected direct-deploy operation is currently unavailable server-side.
+- Permanent local gstack activation: **BLOCKED** only by runtime reachability/authentication (no authorized Remote Desktop device online; Codex Tasks not authenticated).
+- Production promotion: **BLOCKED intentionally** until the Vercel-specific preview gate is green. Production has not been changed.
+
+Machine-readable qualification evidence is stored in `config/r01-qualification-evidence.json`.
