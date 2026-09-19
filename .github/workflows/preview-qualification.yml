@@ -1,15 +1,6 @@
 name: preview-qualification
 
 on:
-  pull_request:
-    paths:
-      - "api/**"
-      - "config/**"
-      - "scripts/**"
-      - "package.json"
-      - "package-lock.json"
-      - "vercel.json"
-      - ".github/workflows/preview-qualification.yml"
   workflow_dispatch:
 
 permissions:
@@ -21,7 +12,6 @@ concurrency:
 
 jobs:
   preview:
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
