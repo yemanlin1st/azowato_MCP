@@ -46,6 +46,9 @@ jobs:
       - name: ΩDEVFABRIC egress/security contract
         run: npm run test:egress
 
+      - name: Extended SWE RAG storage contract
+        run: npm run test:extended
+
       - name: MCP boundary and registry smoke test
         run: timeout 20s npm run test:mcp
 
