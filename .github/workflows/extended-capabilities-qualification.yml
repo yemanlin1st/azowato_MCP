@@ -39,6 +39,11 @@ jobs:
           test "$(git -C "$RUNNER_TEMP/openrag" rev-parse HEAD)" = "$OPENRAG_COMMIT"
           grep -q 'version = "0.5.0"' "$RUNNER_TEMP/openrag/pyproject.toml"
           grep -q "Apache License" "$RUNNER_TEMP/openrag/LICENSE"
+      - name: Apply OpenRAG multi-cloud overlay
+        run: |
+          python scripts/harden_openrag.py "$RUNNER_TEMP/openrag"
+          test -f "$RUNNER_TEMP/openrag/PEFY_OPENRAG_HARDENING.json"
+
       - name: Install and import OpenRAG
         shell: bash
         run: |
