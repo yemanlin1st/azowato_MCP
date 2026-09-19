@@ -280,11 +280,12 @@ function buildLocalInstallPlan(client: "codex" | "vscode" | "generic", include: 
       id: "swe-rex",
       classification: "sandbox-runtime",
       source: "https://github.com/SWE-agent/SWE-ReX.git",
-      commit: "5c995c365dfb1fd5bc56fda688be5d8538f9931f",
+      version: "1.4.0",
+      commit: "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
       license: "MIT",
       commands: [
         "git clone --no-tags https://github.com/SWE-agent/SWE-ReX.git <isolated-dir>",
-        "git -C <isolated-dir> checkout --detach 5c995c365dfb1fd5bc56fda688be5d8538f9931f",
+        "git -C <isolated-dir> checkout --detach f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
         "python -m venv <isolated-venv>",
         "<isolated-venv>/bin/pip install <isolated-dir>",
         "<isolated-venv>/bin/swerex-remote --help"
