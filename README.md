@@ -51,7 +51,12 @@ The guard stops and escalates instead of performing a blind application rollback
 ```bash
 npm ci --ignore-scripts --no-audit --no-fund
 npm run qualify
-python scripts/rollback_guard.py
+
+# Expected fail-closed contract when no health URL is supplied:
+python scripts/rollback_guard.py || test $? -eq 2
+
+# Operational observe-mode health check:
+PEFY_HEALTH_URL=https://<preview-or-production-host>/api/health python scripts/rollback_guard.py
 ```
 
 ## Deploy
@@ -60,4 +65,4 @@ Deploy to Vercel and connect an MCP client to `https://<deployment>/mcp`.
 
 ## Qualification note
 
-`package-lock.json` is not yet committed. Until a qualified lockfile is generated and reviewed, dependency installation is not fully reproducible; keep ΩDEVFABRIC R0.1 behind the draft/preview gate and do not promote this branch directly to production.
+`package-lock.json` is committed and CI uses deterministic `npm ci` with lifecycle scripts disabled. ΩDEVFABRIC R0.1 remains behind the review/preview gate until final CI and deployment-preview evidence are green.
