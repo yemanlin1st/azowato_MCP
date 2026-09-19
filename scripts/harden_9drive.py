@@ -35,10 +35,10 @@ system_routes.write_text(safe_system, encoding="utf-8")
 
 text = compose.read_text(encoding="utf-8")
 replacements = {
-    "\${MYSQL_ROOT_PASSWORD:-root}": "\${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required}",
-    "\${MYSQL_PASSWORD:-change-this-database-password}": "\${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}",
-    "\${JWT_ACCESS_SECRET:-change-this-jwt-secret-at-least-32-chars}": "\${JWT_ACCESS_SECRET:?JWT_ACCESS_SECRET is required}",
-    "\${TOKEN_ENCRYPTION_KEY:-change-this-encryption-key-32bytes!}": "\${TOKEN_ENCRYPTION_KEY:?TOKEN_ENCRYPTION_KEY is required}",
+    "${MYSQL_ROOT_PASSWORD:-root}": "${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required}",
+    "${MYSQL_PASSWORD:-change-this-database-password}": "${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}",
+    "${JWT_ACCESS_SECRET:-change-this-jwt-secret-at-least-32-chars}": "${JWT_ACCESS_SECRET:?JWT_ACCESS_SECRET is required}",
+    "${TOKEN_ENCRYPTION_KEY:-change-this-encryption-key-32bytes!}": "${TOKEN_ENCRYPTION_KEY:?TOKEN_ENCRYPTION_KEY is required}",
 }
 for old, new in replacements.items():
     text = text.replace(old, new)
