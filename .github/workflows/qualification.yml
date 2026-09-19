@@ -46,8 +46,8 @@ jobs:
       - name: ΩDEVFABRIC egress/security contract
         run: npm run test:egress
 
-      - name: MCP handler smoke test
-        run: npm run test:mcp
+      - name: MCP boundary and registry smoke test
+        run: timeout 20s npm run test:mcp
 
       - name: Rollback guard fail-closed contract
         shell: bash
