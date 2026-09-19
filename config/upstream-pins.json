@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "observedAt": "2026-09-19",
+  "dependencies": {
+    "gstack": {
+      "repository": "garrytan/gstack",
+      "version": "1.87.4.0",
+      "commit": "a6b3a57512ca6d5c6aa5b68f74f736195021f96e",
+      "commitSignatureVerified": true,
+      "license": "MIT",
+      "promotionPolicy": "manual-review-and-requalification",
+      "autoUpgrade": false
+    }
+  }
+}
