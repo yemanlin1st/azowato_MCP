@@ -19,7 +19,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test:logic": "node scripts/validate_devfabric.mjs",
-    "qualify": "npm run typecheck && npm run test:logic && npm run test:egress && npm run test:mcp && npm run test:mcp-network && npm run test:wave2",
+    "qualify": "npm run typecheck && npm run test:logic && npm run test:egress && npm run test:mcp && npm run test:mcp-network && npm run test:preview && npm run test:wave2",
     "test:egress": "node scripts/validate_egress_policy.mjs",
     "test:mcp": "node scripts/smoke_mcp.mjs",
     "test:mcp-network": "node scripts/network_mcp_smoke.mjs",
@@ -27,7 +27,8 @@
     "start": "node scripts/portable_server.mjs",
     "test:extended": "node scripts/validate_extended_fabric.mjs",
     "test:wave2": "node scripts/reconcile_wave2.mjs",
-    "start:preview": "node scripts/portable_server.mjs --preview-selftest"
+    "start:preview": "node scripts/portable_server.mjs --preview-selftest",
+    "test:preview": "node scripts/portable_preview_smoke.mjs"
   },
   "packageManager": "npm@10.9.2"
 }
