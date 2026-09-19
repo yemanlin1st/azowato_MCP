@@ -33,8 +33,8 @@ expectPin("9drive", {
   hardeningOverlayRequired:true
 });
 
-if (policy.capabilities?.miniSWEAgent?.execution !== "sandbox-required") failures.push("mini-SWE-agent must be sandbox-required");
-if (policy.capabilities?.miniSWEAgent?.hostShellDefault !== "deny") failures.push("mini-SWE-agent host shell must default deny");
+if (policy.capabilities?.miniSWEAgent?.executionMode !== "sandbox-first") failures.push("mini-SWE-agent must be sandbox-first");
+if (policy.capabilities?.miniSWEAgent?.localHostShell !== "deny-by-default") failures.push("mini-SWE-agent host shell must default deny");
 if (policy.capabilities?.openrag?.documentDataEgress !== "deny-by-default") failures.push("OpenRAG document data egress must default deny");
 if (policy.capabilities?.nineDrive?.runtimeSelfUpdate !== false) failures.push("9drive runtime self-update must be false");
 if (policy.capabilities?.nineDrive?.systemMutationRoutes !== false) failures.push("9drive system mutation routes must be false");
