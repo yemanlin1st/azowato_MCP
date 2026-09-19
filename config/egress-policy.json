@@ -30,7 +30,14 @@
         "registry.npmjs.org",
         "api.vercel.com",
         "vercel.com",
-        "*.vercel.app"
+        "*.vercel.app",
+        "railway.app",
+        "*.up.railway.app",
+        "github.com",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "docker.io",
+        "registry-1.docker.io"
       ],
       "writeScope": "ephemeral Vercel preview deployment only",
       "productionAliasMutation": false
@@ -116,6 +123,91 @@
       "productionPromotionRequiresTargetProviderPreview": true,
       "canonicalRuntime": "npm start portable runtime",
       "failoverPrinciple": "no single cloud provider is authoritative for application state"
+    },
+    "agenticCoding": {
+      "defaultNetwork": "deny-unless-mission-granted",
+      "autonomousShell": "sandbox-required",
+      "workspaceWrite": "single-primary-writer",
+      "allowedBootstrap": [
+        "github.com",
+        "api.github.com",
+        "registry.npmjs.org",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "releases.openai.com",
+        "chatgpt.com"
+      ],
+      "providers": {
+        "mini-swe-agent": {
+          "modelEgress": "policy-routed-only",
+          "hostShell": false
+        },
+        "swe-rex": {
+          "remoteExecution": "disabled-until-target-authenticated",
+          "localSandbox": true
+        },
+        "codex-cli": {
+          "auth": "ChatGPT or secret-managed API key",
+          "productionWrites": "human-gated"
+        },
+        "aider": {
+          "modelEgress": "policy-routed-only",
+          "gitAutoCommit": "disabled-by-default-in-governed-mode"
+        },
+        "continue": {
+          "cloudLogin": "optional",
+          "localOnlyMode": "preferred-when-possible"
+        }
+      }
+    },
+    "ragKnowledge": {
+      "openrag": {
+        "bootstrap": [
+          "github.com",
+          "pypi.org",
+          "files.pythonhosted.org",
+          "docker.io",
+          "registry-1.docker.io"
+        ],
+        "runtimeModel": "ollama-or-policy-routed-provider",
+        "builtInMcp": "authenticated",
+        "opensearch": "private-network-only",
+        "telemetry": "off-unless-explicitly-approved",
+        "externalConnectors": "disabled-until-separately-authorized"
+      }
+    },
+    "modelRuntime": {
+      "ollama": {
+        "listen": "loopback-or-private-network",
+        "publicExposure": false,
+        "modelPull": "explicit-approved-models-only"
+      },
+      "tabby": {
+        "listen": "loopback-or-private-network",
+        "publicExposure": false,
+        "usageCollection": "disabled",
+        "gpuOptional": true
+      }
+    },
+    "storageGateway": {
+      "nineDrive": {
+        "googleOAuth": "credentials-required",
+        "s3": "credentials-required",
+        "secrets": "vault-or-runtime-injection-only",
+        "upstreamUpdateUi": "disabled-in-governed-deployment",
+        "defaultPasswords": "forbidden",
+        "publicUploadApi": "disabled-until-api-key-policy-and-rate-limits-pass"
+      }
+    },
+    "telephony": {
+      "threeCX": {
+        "nativePlugin": false,
+        "api": "3CX v20 Configuration API",
+        "credentials": "required",
+        "scope": "least-privilege service principal",
+        "writes": "human-approved T4",
+        "recordingsAndCallContent": "data-classification-and-retention-policy-required"
+      }
     }
   }
 }
