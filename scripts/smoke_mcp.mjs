@@ -54,3 +54,5 @@ console.log(JSON.stringify({
   registeredTools:toolNames,
   networkToolsList:"DEFERRED_TO_PREVIEW"
 }, null, 2));
+
+process.exit(0);
