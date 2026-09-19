@@ -49,6 +49,9 @@ jobs:
       - name: Extended SWE RAG storage contract
         run: npm run test:extended
 
+      - name: Wave 2 synchronization and reconciliation
+        run: npm run test:wave2
+
       - name: MCP boundary and registry smoke test
         run: timeout 20s npm run test:mcp
 
