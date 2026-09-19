@@ -131,7 +131,8 @@ jobs:
               ;;
 
             three-cx)
-              node scripts/validate_3cx_policy.mjs              ;;
+              node scripts/validate_3cx_policy.mjs
+              ;;
           esac
 
       - name: Emit evidence
