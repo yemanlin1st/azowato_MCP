@@ -43,8 +43,17 @@ jobs:
       - name: ΩDEVFABRIC policy contract
         run: npm run test:logic
 
-      - name: Rollback guard dry-run
-        run: python scripts/rollback_guard.py
+      - name: Rollback guard fail-closed contract
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/rollback-evidence"
+          set +e
+          output=$(PEFY_ROLLBACK_EVIDENCE_DIR="$RUNNER_TEMP/rollback-evidence" python scripts/rollback_guard.py 2>&1)
+          code=$?
+          set -e
+          echo "$output"
+          test "$code" -eq 2
+          echo "$output" | grep -q '"decision": "BLOCKED_MISSING_HEALTH_URL"'
 
       - name: Production dependency audit
         run: npm audit --omit=dev --audit-level=high
