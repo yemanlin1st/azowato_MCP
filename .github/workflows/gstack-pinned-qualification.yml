@@ -23,8 +23,8 @@ jobs:
     env:
       GSTACK_COMMIT: a6b3a57512ca6d5c6aa5b68f74f736195021f96e
       GSTACK_VERSION: 1.87.4.0
-      GSTACK_HOME: ${{ runner.temp }}/gstack-state
-      CODEX_HOME: ${{ runner.temp }}/codex-home
+      GSTACK_HOME: ${{ github.workspace }}/.ci/gstack-state
+      CODEX_HOME: ${{ github.workspace }}/.ci/codex-home
       GSTACK_PLAN_TUNE_HOOKS: "no"
     steps:
       - name: Checkout control plane
