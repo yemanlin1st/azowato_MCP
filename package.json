@@ -1,9 +1,9 @@
 {
-  "name": "pefy-experience-media-mcp",
-  "version": "1.0.1",
+  "name": "pefy-meta-supra-capability-mesh-mcp",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
-  "description": "Read-only MCP control plane for PEFY-GG Experience & Media Swarm OS",
+  "description": "Read-only governed MCP control plane for the PEFY-GG Meta Supra Capability Mesh and ΩDEVFABRIC",
   "engines": {
     "node": "22.x"
   },
