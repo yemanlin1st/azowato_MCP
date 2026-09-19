@@ -122,3 +122,43 @@ Permanent workstation activation remains access-dependent. Once an authorized Re
 - Production promotion: **BLOCKED intentionally** until the Vercel-specific preview gate is green. Production has not been changed.
 
 Machine-readable qualification evidence is stored in `config/r01-qualification-evidence.json`.
+
+## ΩDEVFABRIC Wave 2
+
+Wave 2 extends the governed fabric with a synchronized, parallel and reconciled engineering stack:
+
+- **Primary coding execution:** Codex CLI + mini-SWE-agent.
+- **Sandbox/runtime:** SWE-ReX.
+- **Engineering advisory:** gstack + Aider + Continue.
+- **Private/local model runtime:** Ollama.
+- **Self-hosted code assistant:** Tabby.
+- **Knowledge/RAG:** hardened OpenRAG.
+- **Storage gateway:** hardened 9drive for Google Drive and S3-compatible targets.
+- **Telephony integration:** governed 3CX v20 Configuration API adapter.
+- **Multi-cloud:** Railway provider-neutral preview; Vercel target-provider production gate; Rocky Linux/container on-prem target.
+
+Execution follows `sequence → synchronize → parallelize → reconcile → preview → promote` with a single-writer rule: only the selected primary coding agent may write to the active branch; advisory agents use read-only analysis or isolated worktrees.
+
+### Wave 2 qualification status
+
+The qualified runtime head is `d902d301b5e78630a3da66b9ac66efc683427fd9`.
+
+All qualification lanes are **GREEN**:
+
+- core ΩDEVFABRIC/reconciliation;
+- gstack;
+- mini-SWE-agent + SWE-ReX, including a deterministic real agent-loop smoke;
+- Codex CLI;
+- Aider;
+- Continue CLI 1.5.47 (the CLI is versioned separately from the final 2.0.0 VS Code/repository release line);
+- signed/hardened OpenRAG snapshot;
+- unsigned exact-SHA 9drive with mandatory PEFY hardening overlay;
+- Ollama 0.34.2 container/API health;
+- Tabby 0.32.0 container/version smoke with usage collection disabled;
+- 3CX adapter security/policy contract.
+
+Provider-neutral preview is **GREEN** on Railway deployment `0cfe1e71-a65d-4d4b-b5a9-62daa4b2d437`: health passed and the authenticated stateless MCP self-test returned the exact nine governed tools.
+
+Environment-specific activation remains gated where real credentials/hardware are required. In particular, Vercel target-provider preview, permanent workstation/Codex authentication, 3CX PBX credentials/license, 9drive Google/S3 credentials, OpenRAG production persistence/model connectors, and Ollama/Tabby model-performance benchmarking are not represented as complete until those target-environment gates pass.
+
+Machine-readable Wave 2 evidence is stored in `config/wave2-qualification-evidence.json`.
