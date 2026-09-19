@@ -22,6 +22,46 @@ for (const [key, expected] of Object.entries({
 }
 if (policy.capabilities?.previewQualification?.productionAliasMutation !== false) failures.push("preview must not mutate production alias");
 
+const swe = policy.capabilities?.miniSWEAgent ?? {};
+for (const [key, expected] of Object.entries({
+  automaticRuntimeEgress: "deny",
+  executionMode: "sandbox-first",
+  localHostShell: "deny-by-default",
+  modelProviderEgress: "mission-scoped-explicit-grant",
+  modelSecrets: "secret-manager-injection-only",
+  gitWrite: "feature-branch-or-disposable-worktree-only",
+  productionDeploy: false,
+  destructiveCommands: "human-approval-required"
+})) {
+  if (swe[key] !== expected) failures.push(`mini-SWE-agent ${key} must equal ${JSON.stringify(expected)}`);
+}
+const rexPolicy = policy.capabilities?.sweRex ?? {};
+if (rexPolicy.automaticRuntimeEgress !== "deny") failures.push("SWE-ReX automatic runtime egress must be deny");
+if (rexPolicy.privilegedContainers !== false) failures.push("SWE-ReX privileged containers must be false");
+if (rexPolicy.hostDockerSocket !== "deny-unless-explicitly-approved") failures.push("SWE-ReX host Docker socket must be deny-by-default");
+
+const swePin = pins.dependencies?.["mini-swe-agent"];
+if (!swePin) failures.push("mini-SWE-agent pin missing");
+else {
+  if (swePin.repository !== "SWE-agent/mini-swe-agent") failures.push("mini-SWE-agent repository pin mismatch");
+  if (swePin.version !== "2.4.6") failures.push("mini-SWE-agent version pin mismatch");
+  if (swePin.commit !== "a83fcae82d2a08f0ee0c688f9d137b3566c097f8") failures.push("mini-SWE-agent commit pin mismatch");
+  if (swePin.commitSignatureVerified !== true) failures.push("mini-SWE-agent signature qualification missing");
+  if (swePin.license !== "MIT") failures.push("mini-SWE-agent license mismatch");
+  if (swePin.autoUpgrade !== false) failures.push("mini-SWE-agent auto-upgrade must be false");
+}
+const rexPin = pins.dependencies?.["swe-rex"];
+if (!rexPin) failures.push("SWE-ReX pin missing");
+else {
+  if (rexPin.repository !== "SWE-agent/SWE-ReX") failures.push("SWE-ReX repository pin mismatch");
+  if (rexPin.version !== "1.4.0") failures.push("SWE-ReX version pin mismatch");
+  if (rexPin.commit !== "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91") failures.push("SWE-ReX commit pin mismatch");
+  if (rexPin.commitSignatureVerified !== true) failures.push("SWE-ReX signature qualification missing");
+  if (rexPin.license !== "MIT") failures.push("SWE-ReX license mismatch");
+  if (rexPin.autoUpgrade !== false) failures.push("SWE-ReX auto-upgrade must be false");
+}
+
+
 const pin = pins.dependencies?.gstack;
 if (!pin) failures.push("gstack pin missing");
 else {
@@ -44,7 +84,14 @@ for (const required of [
   'pairAgent: "off"',
   'memorableRecall: "off"',
   'checkpointPush: false',
-  'designDetector: "off"'
+  'designDetector: "off"',
+  'id: "mini-swe-agent"',
+  'hostLocalAutonomy: false',
+  'modelSecretPersistence: false',
+  'productionDeploy: false',
+  'gitWrites: "feature-branch-or-disposable-worktree-only"',
+  'id: "swe-rex"',
+  'privilegedContainers: false'
 ]) {
   if (!source.includes(required)) failures.push(`server contract missing: ${required}`);
 }
