@@ -35,7 +35,8 @@ const CAPABILITY_GROUPS = [
   { id: "software", primary: "GitHub + Context7 + Vercel + Neon/PostgreSQL controlled build", advisory: ["gstack", "mini-SWE-agent", "SWE-ReX", "Playwright", "Sentry", "Firecrawl", "Brave Search", "Exa", "SkillUI", "Supabase", "Base44"] },
   { id: "analytics", primary: "Data Analytics skill family", advisory: ["Airtable", "Google Sheets", "Postgres"] },
   { id: "documents", primary: "Artifact capability selected by output format", advisory: ["Google Drive", "Canva", "OpenAI templates"] },
-  { id: "knowledge", primary: "RMS + MemPalace + OMNIA Core Store", advisory: ["Notion", "Google Drive"] },
+  { id: "knowledge", primary: "RMS + OpenRAG + OMNIA Core Store under tenant/provenance policy", advisory: ["MemPalace", "Notion", "Google Drive", "OpenSearch", "Docling"] },
+  { id: "storage", primary: "ΩSTORAGE provider-neutral control plane", advisory: ["hardened 9drive", "Google Drive", "S3/MinIO/R2/B2", "Azure Blob", "IBM COS"] },
   { id: "communications", primary: "Native connector under read-first rule", advisory: ["Gmail", "Calendar", "Contacts"] },
   { id: "governance", primary: "Native PEFY governed loop", advisory: ["Plugin Management", "Skillspector", "Councils"] },
 ];
@@ -253,6 +254,73 @@ function buildLocalInstallPlan(client: "codex" | "vscode" | "generic", include: 
     });
   }
 
+  if (wanted.has("mini-swe-agent")) {
+    steps.push({
+      id: "mini-swe-agent",
+      classification: "sandboxed-coding-agent",
+      source: "https://github.com/SWE-agent/mini-swe-agent.git",
+      version: "2.4.6",
+      commit: "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+      license: "MIT",
+      prerequisites: ["Python >= 3.10", "uv or isolated virtual environment", "sandbox backend for autonomous work"],
+      commands: [
+        "git clone --no-tags https://github.com/SWE-agent/mini-swe-agent.git <isolated-dir>",
+        "git -C <isolated-dir> checkout --detach a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+        "python -m venv <isolated-venv>",
+        "<isolated-venv>/bin/pip install <isolated-dir>",
+        "<isolated-venv>/bin/mini --help"
+      ],
+      activationRule: "Use a disposable clone/branch and sandbox. LocalEnvironment is allowed only for bounded smoke tests; T3/T4 autonomous work must use an isolated runtime such as SWE-ReX/Docker/Podman.",
+      secretInjection: "Inject model credentials only for the mission that invokes a model; never persist them in repository config or trajectories.",
+    });
+  }
+
+  if (wanted.has("swe-rex")) {
+    steps.push({
+      id: "swe-rex",
+      classification: "sandbox-runtime",
+      source: "https://github.com/SWE-agent/SWE-ReX.git",
+      commit: "5c995c365dfb1fd5bc56fda688be5d8538f9931f",
+      license: "MIT",
+      commands: [
+        "git clone --no-tags https://github.com/SWE-agent/SWE-ReX.git <isolated-dir>",
+        "git -C <isolated-dir> checkout --detach 5c995c365dfb1fd5bc56fda688be5d8538f9931f",
+        "python -m venv <isolated-venv>",
+        "<isolated-venv>/bin/pip install <isolated-dir>",
+        "<isolated-venv>/bin/swerex-remote --help"
+      ],
+      activationRule: "Prefer container/remote disposable backends; privileged local-host execution is denied by default.",
+    });
+  }
+
+  if (wanted.has("openrag")) {
+    steps.push({
+      id: "openrag",
+      classification: "self-hosted-rag-plane",
+      source: "https://github.com/langflow-ai/openrag.git",
+      upstreamPackageVersion: "0.5.0",
+      commit: "dbb6f9e442fe90b2a60414bf2eb6d4c83d1dd30d",
+      license: "Apache-2.0",
+      prerequisites: ["Python >= 3.13", "Docker/Podman for full stack", "OpenSearch memory budget", "secret manager"],
+      qualification: ["exact signed commit", "Python package/CLI import", "Docker Compose config", "MCP /mcp protected by X-API-Key", "connectors disabled until authorized"],
+      activationRule: "OpenRAG is the knowledge/index layer, not the canonical file store. Route external model calls through ΩOmniRoute and preserve tenant/source provenance.",
+    });
+  }
+
+  if (wanted.has("9drive")) {
+    steps.push({
+      id: "9drive",
+      classification: "hardened-storage-gateway",
+      source: "https://github.com/zenhosta/9drive.git",
+      commit: "811d4a2137538b73abb43d195d7bf452e01b0c58",
+      license: "Apache-2.0",
+      sourceTrust: "unsigned-exact-SHA",
+      prerequisites: ["Node.js >= 20", "MySQL 8+ for runtime", "secret manager", "PEFY hardening overlay"],
+      activationRule: "Never run stock upstream unmodified. Apply the PEFY overlay first; runtime self-update, global OAuth mutation, backup and restore routes remain disabled. Start S3-compatible storage first; enable Google Drive only for dedicated accounts/explicit consent after policy review.",
+      qualification: ["npm ci backend/frontend", "Prisma generate", "TypeScript backend build", "frontend build", "dependency audit", "overlay assertions"],
+    });
+  }
+
   if (wanted.has("gstack")) {
     steps.push({
       id: "gstack",
@@ -351,6 +419,7 @@ function classifyMission(mission: string) {
   let risk: keyof typeof RISK = "T1";
 
   if (/dashboard|kpi|metric|analysis|data/.test(text)) { domain = "analytics"; loop = "analytics"; }
+  else if (/storage|drive|object store|s3|bucket|file gateway/.test(text)) { domain = "storage"; loop = "build"; }
   else if (/app|website|code|api|deploy|repository|mcp/.test(text)) { domain = "software"; loop = "build"; }
   else if (/design|figma|canva|ui|ux|brand|video/.test(text)) { domain = "design"; loop = "design"; }
   else if (/document|report|memo|presentation|spreadsheet/.test(text)) { domain = "documents"; loop = "artifact"; }
