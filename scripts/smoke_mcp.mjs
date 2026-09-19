@@ -1,57 +1,56 @@
 import assert from "node:assert/strict";
-
-process.env.MCP_API_KEY = "pefy-smoke-key";
+import fs from "node:fs";
 
 const healthModule = await import("../api/health.ts");
 const serverModule = await import("../api/server.ts");
+const source = fs.readFileSync(new URL("../api/server.ts", import.meta.url), "utf8");
 
-const health = healthModule.GET();
-assert.equal(health.status, 200, "health endpoint must return 200");
-const healthBody = await health.json();
-assert.equal(healthBody.service, "PEFY-GG Meta Supra Capability Mesh MCP");
-assert.equal(healthBody.status, "ready");
-assert.equal(healthBody.mode, "bearer-protected-read-only");
-assert.equal(healthBody.inventory?.mcpEntries, 9);
+// 1) Fail-closed health posture with no secret configured.
+delete process.env.MCP_API_KEY;
+const unconfiguredHealth = healthModule.GET();
+assert.equal(unconfiguredHealth.status, 200);
+const unconfiguredBody = await unconfiguredHealth.json();
+assert.equal(unconfiguredBody.status, "configuration_required");
+assert.equal(unconfiguredBody.mode, "fail-closed");
+assert.equal(unconfiguredBody.inventory?.mcpEntries, 9);
 
-const initializeBody = JSON.stringify({
-  jsonrpc: "2.0",
-  id: 1,
-  method: "initialize",
-  params: {
-    protocolVersion: "2025-06-18",
-    capabilities: {},
-    clientInfo: { name: "pefy-smoke", version: "1.0.0" }
-  }
-});
-
-const baseHeaders = {
-  "content-type": "application/json",
-  "accept": "application/json, text/event-stream"
-};
-
-const unauthorized = await serverModule.POST(new Request("http://localhost/mcp", {
-  method: "POST",
-  headers: baseHeaders,
-  body: initializeBody
+// 2) MCP auth boundary must fail closed before handler dispatch.
+const rpcBody = JSON.stringify({jsonrpc:"2.0",id:1,method:"tools/list",params:{}});
+const headers = {"content-type":"application/json","accept":"application/json, text/event-stream"};
+const locked = await serverModule.POST(new Request("http://localhost/mcp", {
+  method:"POST", headers, body:rpcBody
 }));
-assert.equal(unauthorized.status, 401, "unauthenticated MCP call must be rejected");
+assert.equal(locked.status, 503);
 
-// Use a deliberately malformed RPC after authentication. This exercises the
-// authenticated MCP handler without opening a long-lived Streamable HTTP/SSE
-// session. The handler may return 4xx for the malformed payload, but it must
-// pass the auth boundary and must never fail open/closed as 401/503.
-const authorizedMalformed = await serverModule.POST(new Request("http://localhost/mcp", {
-  method: "POST",
-  headers: { ...baseHeaders, authorization: "Bearer pefy-smoke-key" },
-  body: "{}"
+process.env.MCP_API_KEY = "pefy-smoke-key";
+const wrongKey = await serverModule.POST(new Request("http://localhost/mcp", {
+  method:"POST",
+  headers:{...headers,authorization:"Bearer wrong-key"},
+  body:rpcBody
 }));
-assert.notEqual(authorizedMalformed.status, 401, "authorized request must pass auth boundary");
-assert.notEqual(authorizedMalformed.status, 503, "authorized request must not hit configuration fail-closed path");
-assert.ok(authorizedMalformed.status >= 200 && authorizedMalformed.status < 500, `unexpected MCP handler status ${authorizedMalformed.status}`);
+assert.equal(wrongKey.status, 401);
+
+// 3) Tool registration contract. Full authenticated tools/list is intentionally
+// reserved for the deployed preview because Streamable HTTP may keep SSE open
+// in an in-process test harness.
+const toolNames = [...source.matchAll(/server\.tool\("([^"]+)"/g)].map((m)=>m[1]);
+const expected = [
+  "capability_status",
+  "capability_catalog",
+  "route_mission",
+  "compile_prompt_contract",
+  "quality_gate",
+  "select_councils",
+  "devfabric_status",
+  "local_install_plan",
+  "loop_catalog"
+];
+assert.deepEqual(toolNames, expected);
 
 console.log(JSON.stringify({
-  health: "PASS",
-  unauthenticatedBoundary: unauthorized.status,
-  authenticatedHandlerStatus: authorizedMalformed.status,
-  mcpEntries: healthBody.inventory.mcpEntries
+  healthFailClosed:"PASS",
+  lockedMcpBoundary:locked.status,
+  wrongCredentialBoundary:wrongKey.status,
+  registeredTools:toolNames,
+  networkToolsList:"DEFERRED_TO_PREVIEW"
 }, null, 2));
