@@ -43,6 +43,9 @@ jobs:
       - name: ΩDEVFABRIC policy contract
         run: npm run test:logic
 
+      - name: ΩDEVFABRIC egress/security contract
+        run: npm run test:egress
+
       - name: Rollback guard fail-closed contract
         shell: bash
         run: |
