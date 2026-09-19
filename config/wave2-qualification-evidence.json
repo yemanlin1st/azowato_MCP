@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "1.0",
+  "observedAt": "2026-09-19",
+  "gate": "ΩDEVFABRIC Wave 2 Preview Qualification",
+  "architecture": {
+    "pattern": "sequence-synchronize-parallel-reconcile",
+    "singleWriter": true,
+    "multicloud": {
+      "providerNeutralPreview": "Railway",
+      "targetProduction": "Vercel",
+      "onPremTarget": "Rocky Linux/container runtime"
+    }
+  },
+  "qualifiedHead": "d902d301b5e78630a3da66b9ac66efc683427fd9",
+  "workflows": {
+    "core": {
+      "id": 35450906765,
+      "number": 87,
+      "conclusion": "success"
+    },
+    "gstack": {
+      "id": 35450906826,
+      "number": 62,
+      "conclusion": "success"
+    },
+    "sweAgent": {
+      "id": 35450906777,
+      "number": 49,
+      "conclusion": "success"
+    },
+    "agenticWave2": {
+      "id": 35450906773,
+      "number": 14,
+      "conclusion": "success"
+    },
+    "extendedRagStorage": {
+      "id": 35450906769,
+      "number": 34,
+      "conclusion": "success"
+    },
+    "servicesWave2": {
+      "id": 35450906786,
+      "number": 13,
+      "conclusion": "success"
+    }
+  },
+  "capabilities": {
+    "gstack": {
+      "status": "qualified",
+      "level": "disposable Codex-home install + sovereign config + upstream targeted tests"
+    },
+    "miniSWEAgent": {
+      "status": "qualified",
+      "version": "2.4.6",
+      "level": "exact-source install + deterministic real agent-loop smoke",
+      "permanentHostActivation": false
+    },
+    "sweRex": {
+      "status": "qualified",
+      "version": "1.4.0",
+      "level": "sandbox runtime install/import/CLI smoke",
+      "permanentRemoteBackendActivation": false
+    },
+    "codexCli": {
+      "status": "qualified",
+      "version": "0.155.1",
+      "level": "disposable CLI install/version smoke",
+      "authenticatedPermanentRuntime": false
+    },
+    "aider": {
+      "status": "qualified",
+      "version": "0.86.0",
+      "level": "disposable CLI install/version smoke",
+      "liveModelCredential": false
+    },
+    "continue": {
+      "status": "qualified",
+      "repositoryRelease": "2.0.0-vscode",
+      "cliPackageVersion": "1.5.47",
+      "level": "disposable CLI install/help smoke",
+      "hostedLogin": false
+    },
+    "openrag": {
+      "status": "qualified",
+      "commit": "dbb6f9e442fe90b2a60414bf2eb6d4c83d1dd30d",
+      "releaseBaseline": "0.7.1",
+      "level": "signed-source + PEFY overlay + install/import + Compose/MCP architecture",
+      "liveProductionCluster": false
+    },
+    "nineDrive": {
+      "status": "qualified",
+      "commit": "811d4a2137538b73abb43d195d7bf452e01b0c58",
+      "level": "unsigned exact SHA + mandatory PEFY hardening + backend/frontend build/audit + health + Compose validation",
+      "liveStorageCredentials": false
+    },
+    "ollama": {
+      "status": "qualified",
+      "version": "0.34.2",
+      "level": "container start + /api/tags HTTP health",
+      "modelInferenceBenchmark": false
+    },
+    "tabby": {
+      "status": "qualified",
+      "version": "0.32.0",
+      "level": "pinned container/version smoke with usage collection disabled",
+      "modelServingBenchmark": false
+    },
+    "threeCX": {
+      "status": "adapter-contract-qualified",
+      "level": "least-privilege/T4 policy validation",
+      "livePbxConnection": false
+    }
+  },
+  "remotePreview": {
+    "provider": "Railway",
+    "project": "pefy-devfabric-r01-preview",
+    "service": "omega-devfabric-r01-preview",
+    "deploymentId": "0cfe1e71-a65d-4d4b-b5a9-62daa4b2d437",
+    "deployedSha": "d902d301b5e78630a3da66b9ac66efc683427fd9",
+    "deploymentStatus": "SUCCESS",
+    "health": "PASS",
+    "mcpSelfTest": {
+      "status": "PASS",
+      "authenticatedInitialize": 200,
+      "transportMode": "stateless",
+      "sessionPresent": false,
+      "toolsList": 200,
+      "toolCount": 9,
+      "tools": [
+        "capability_status",
+        "capability_catalog",
+        "route_mission",
+        "compile_prompt_contract",
+        "quality_gate",
+        "select_councils",
+        "devfabric_status",
+        "local_install_plan",
+        "loop_catalog"
+      ]
+    }
+  },
+  "controlledBlockers": {
+    "vercelTargetPreview": "GitHub Vercel deployment credentials unavailable and connected direct-deploy operation unavailable server-side.",
+    "permanentMachineActivation": "No authorized Remote Desktop device online; Codex Tasks not authenticated.",
+    "live3CX": "PBX URL, eligible API/license access and least-privilege credentials required.",
+    "liveStorage": "9drive requires approved Google OAuth and/or S3 credentials plus persistent MySQL.",
+    "liveRag": "OpenRAG production cluster requires persistent OpenSearch/Langflow/data volumes and approved model/connector credentials.",
+    "modelPerformance": "Ollama/Tabby production inference requires selected models and target CPU/GPU benchmark."
+  },
+  "productionChanged": false,
+  "promotionRule": "Do not merge/promote to Vercel production until the Vercel-specific target-provider preview and remaining environment-specific acceptance gates are green."
+}
