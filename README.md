@@ -49,7 +49,7 @@ The guard stops and escalates instead of performing a blind application rollback
 ## Local validation
 
 ```bash
-npm install --ignore-scripts --no-audit --no-fund
+npm ci --ignore-scripts --no-audit --no-fund
 npm run qualify
 python scripts/rollback_guard.py
 ```
