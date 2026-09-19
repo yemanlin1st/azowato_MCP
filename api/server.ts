@@ -196,7 +196,8 @@ const DEVFABRIC = {
       state: "compatibility-layer",
       mode: "IDE/CLI compatibility layer; upstream repository is read-only after final 2.0.0 release",
       official: "continuedev/continue",
-      version: "2.0.0",
+      version: "2.0.0-vscode",
+      cliPackageVersion: "1.5.47",
       commit: "03b05ef60c378ff06f9e39ada2e22c95fe9ef6ad",
       license: "Apache-2.0",
       secrets: ["optional Continue API key for hosted features"],
@@ -461,7 +462,7 @@ function buildLocalInstallPlan(client: "codex" | "vscode" | "generic", include: 
     steps.push({
       id: "continue",
       classification: "compatibility-cli-ide",
-      commands: ["npm install -g @continuedev/cli@2.0.0", "cn --help"],
+      commands: ["npm install -g @continuedev/cli@1.5.47", "cn --help"],
       activationRule: "Treat as final compatibility release; do not build new strategic dependencies on the read-only upstream.",
     });
   }
