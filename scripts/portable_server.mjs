@@ -65,7 +65,8 @@ const server = http.createServer(async (req, res) => {
 });
 
 async function previewSelfTest() {
-  if (process.env.PEFY_PREVIEW_MODE !== "provider-neutral-remote") return;
+  const enabled = process.env.PEFY_PREVIEW_MODE === "provider-neutral-remote" || process.argv.includes("--preview-selftest");
+  if (!enabled) return;
   const key = process.env.MCP_API_KEY;
   if (!key) throw new Error("preview self-test requires MCP_API_KEY");
 
