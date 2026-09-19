@@ -71,6 +71,18 @@ async function previewSelfTest() {
   if (!key) throw new Error("preview self-test requires MCP_API_KEY");
 
   const base = `http://127.0.0.1:${port}/mcp`;
+
+  const unauthorized = await fetch(base, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "accept": "application/json, text/event-stream",
+    },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 0, method: "tools/list", params: {} })
+  });
+  if (unauthorized.status !== 401) throw new Error(`unauthenticated boundary HTTP ${unauthorized.status}`);
+  await unauthorized.text();
+
   const common = {
     "authorization": `Bearer ${key}`,
     "content-type": "application/json",
@@ -147,6 +159,7 @@ async function previewSelfTest() {
   console.log(JSON.stringify({
     event: "PEFY_REMOTE_SELFTEST",
     status: "PASS",
+    unauthenticatedBoundary: 401,
     authenticatedInitialize: 200,
     transportMode: session ? "stateful-session" : "stateless",
     sessionPresent: Boolean(session),
