@@ -36,18 +36,22 @@ const unauthorized = await serverModule.POST(new Request("http://localhost/mcp",
 }));
 assert.equal(unauthorized.status, 401, "unauthenticated MCP call must be rejected");
 
-const authorized = await serverModule.POST(new Request("http://localhost/mcp", {
+// Use a deliberately malformed RPC after authentication. This exercises the
+// authenticated MCP handler without opening a long-lived Streamable HTTP/SSE
+// session. The handler may return 4xx for the malformed payload, but it must
+// pass the auth boundary and must never fail open/closed as 401/503.
+const authorizedMalformed = await serverModule.POST(new Request("http://localhost/mcp", {
   method: "POST",
   headers: { ...baseHeaders, authorization: "Bearer pefy-smoke-key" },
-  body: initializeBody
+  body: "{}"
 }));
-assert.notEqual(authorized.status, 401, "authorized MCP call must pass auth boundary");
-assert.notEqual(authorized.status, 503, "authorized MCP call must not fail closed");
-assert.ok(authorized.status >= 200 && authorized.status < 500, `unexpected MCP status ${authorized.status}`);
+assert.notEqual(authorizedMalformed.status, 401, "authorized request must pass auth boundary");
+assert.notEqual(authorizedMalformed.status, 503, "authorized request must not hit configuration fail-closed path");
+assert.ok(authorizedMalformed.status >= 200 && authorizedMalformed.status < 500, `unexpected MCP handler status ${authorizedMalformed.status}`);
 
 console.log(JSON.stringify({
   health: "PASS",
   unauthenticatedBoundary: unauthorized.status,
-  authenticatedHandlerStatus: authorized.status,
+  authenticatedHandlerStatus: authorizedMalformed.status,
   mcpEntries: healthBody.inventory.mcpEntries
 }, null, 2));
