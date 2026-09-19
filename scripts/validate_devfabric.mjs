@@ -13,6 +13,10 @@ const required = [
   "amaancoderx/skillui",
   "garrytan/gstack",
   "a6b3a57512ca6d5c6aa5b68f74f736195021f96e",
+  "SWE-agent/mini-swe-agent",
+  "a83fcae82d2a08f0ee0c688f9d137b3566c097f8",
+  "SWE-agent/SWE-ReX",
+  "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91",
   "Never place API keys",
   "versionPinned",
   "killSwitchDefined"
