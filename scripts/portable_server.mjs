@@ -1,0 +1,216 @@
+import http from "node:http";
+import { Readable } from "node:stream";
+import { GET as healthGET } from "../api/health.ts";
+import * as mcp from "../api/server.ts";
+
+function toFetchHeaders(headers) {
+  const out = new Headers();
+  for (const [key, value] of Object.entries(headers)) {
+    if (Array.isArray(value)) for (const item of value) out.append(key, item);
+    else if (value != null) out.set(key, String(value));
+  }
+  return out;
+}
+
+async function sendFetchResponse(response, res) {
+  res.statusCode = response.status;
+  response.headers.forEach((value, key) => res.setHeader(key, value));
+  if (!response.body) return res.end();
+  Readable.fromWeb(response.body).pipe(res);
+}
+
+const port = Number(process.env.PORT || 3000);
+const host = process.env.HOST || "0.0.0.0";
+const previewModeEnabled = process.env.PEFY_PREVIEW_MODE === "provider-neutral-remote" || process.argv.includes("--preview-selftest");
+let previewQualification = {
+  enabled: previewModeEnabled,
+  status: previewModeEnabled ? "pending" : "disabled",
+  updatedAt: new Date().toISOString(),
+};
+
+const server = http.createServer(async (req, res) => {
+  try {
+    const url = new URL(req.url || "/", `http://${req.headers.host || "localhost"}`);
+
+    if (url.pathname === "/api/health" || url.pathname === "/health") {
+      return sendFetchResponse(healthGET(), res);
+    }
+
+    if (url.pathname === "/api/qualification") {
+      const body = JSON.stringify(previewQualification);
+      const status = previewQualification.status === "fail" ? 503 : 200;
+      res.statusCode = status;
+      res.setHeader("content-type", "application/json");
+      res.setHeader("cache-control", "no-store");
+      return res.end(body);
+    }
+
+    if (url.pathname !== "/mcp") {
+      res.statusCode = 404;
+      res.setHeader("content-type", "application/json");
+      return res.end(JSON.stringify({ error: "Not Found" }));
+    }
+
+    const method = (req.method || "POST").toUpperCase();
+    const handler = mcp[method];
+    if (typeof handler !== "function") {
+      res.statusCode = 405;
+      res.setHeader("allow", "GET, POST, DELETE");
+      return res.end();
+    }
+
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    const body = chunks.length ? Buffer.concat(chunks) : undefined;
+
+    const request = new Request(url, {
+      method,
+      headers: toFetchHeaders(req.headers),
+      body: method === "GET" || method === "HEAD" ? undefined : body,
+      duplex: body ? "half" : undefined,
+    });
+
+    return sendFetchResponse(await handler(request), res);
+  } catch (error) {
+    console.error("portable-runtime-error", error);
+    res.statusCode = 500;
+    res.setHeader("content-type", "application/json");
+    res.end(JSON.stringify({ error: "Internal Server Error" }));
+  }
+});
+
+async function previewSelfTest() {
+  if (!previewModeEnabled) return;
+  const key = process.env.MCP_API_KEY;
+  if (!key) throw new Error("preview self-test requires MCP_API_KEY");
+
+  const base = `http://127.0.0.1:${port}/mcp`;
+
+  const unauthorized = await fetch(base, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "accept": "application/json, text/event-stream",
+    },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 0, method: "tools/list", params: {} })
+  });
+  if (unauthorized.status !== 401) throw new Error(`unauthenticated boundary HTTP ${unauthorized.status}`);
+  await unauthorized.text();
+
+  const common = {
+    "authorization": `Bearer ${key}`,
+    "content-type": "application/json",
+    "accept": "application/json, text/event-stream",
+  };
+
+  const init = await fetch(base, {
+    method: "POST",
+    headers: common,
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "initialize",
+      params: {
+        protocolVersion: "2025-06-18",
+        capabilities: {},
+        clientInfo: { name: "pefy-preview-selftest", version: "1.0.0" }
+      }
+    })
+  });
+  if (init.status !== 200) throw new Error(`initialize HTTP ${init.status}`);
+  const session = init.headers.get("mcp-session-id");
+  await init.text();
+
+  const listHeaders = { ...common };
+  if (session) listHeaders["mcp-session-id"] = session;
+
+  const list = await fetch(base, {
+    method: "POST",
+    headers: listHeaders,
+    body: JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/list", params: {} })
+  });
+  if (list.status !== 200) throw new Error(`tools/list HTTP ${list.status}`);
+  const raw = await list.text();
+  const dataLines = raw.split("\n").filter((line) => line.startsWith("data:")).map((line) => line.slice(5).trim());
+  const payload = JSON.parse(dataLines.length ? dataLines.join("") : raw);
+  const names = (payload?.result?.tools || []).map((tool) => tool.name);
+  const expected = [
+    "capability_status",
+    "capability_catalog",
+    "route_mission",
+    "compile_prompt_contract",
+    "quality_gate",
+    "select_councils",
+    "devfabric_status",
+    "local_install_plan",
+    "loop_catalog"
+  ];
+  if (JSON.stringify(names) !== JSON.stringify(expected)) {
+    throw new Error(`tools/list mismatch: ${names.join(",")}`);
+  }
+
+  const statusResponse = await fetch(base, {
+    method: "POST",
+    headers: listHeaders,
+    body: JSON.stringify({ jsonrpc: "2.0", id: 3, method: "tools/call", params: { name: "devfabric_status", arguments: {} } })
+  });
+  if (statusResponse.status !== 200) throw new Error(`devfabric_status HTTP ${statusResponse.status}`);
+  const statusRaw = await statusResponse.text();
+  const statusLines = statusRaw.split("\n").filter((line) => line.startsWith("data:")).map((line) => line.slice(5).trim());
+  const statusPayload = JSON.parse(statusLines.length ? statusLines.join("") : statusRaw);
+  const statusText = statusPayload?.result?.content?.find((item) => item.type === "text")?.text;
+  if (!statusText) throw new Error("devfabric_status text content missing");
+  const devfabric = JSON.parse(statusText);
+  const mini = devfabric.extensions.find((item) => item.id === "mini-swe-agent");
+  const rex = devfabric.extensions.find((item) => item.id === "swe-rex");
+  if (mini?.version !== "2.4.6" || mini?.commit !== "a83fcae82d2a08f0ee0c688f9d137b3566c097f8" || mini?.activationProfile?.hostLocalAutonomy !== false) {
+    throw new Error("mini-SWE-agent devfabric contract mismatch");
+  }
+  if (rex?.version !== "1.4.0" || rex?.commit !== "f802b3e14d82aa4c13291d2fda5bd4fd48f36f91" || rex?.activationProfile?.privilegedContainers !== false) {
+    throw new Error("SWE-ReX devfabric contract mismatch");
+  }
+
+  previewQualification = {
+    enabled: true,
+    status: "pass",
+    updatedAt: new Date().toISOString(),
+    unauthenticatedBoundary: 401,
+    authenticatedInitialize: 200,
+    transportMode: session ? "stateful-session" : "stateless",
+    sessionPresent: Boolean(session),
+    toolsList: 200,
+    toolCount: names.length,
+    tools: names,
+    devfabricCapability: {
+      miniSWEAgent: { version: mini.version, commit: mini.commit },
+      sweRex: { version: rex.version, commit: rex.commit }
+    }
+  };
+  console.log(JSON.stringify({
+    event: "PEFY_REMOTE_SELFTEST",
+    status: "PASS",
+    ...previewQualification
+  }));
+}
+
+server.listen(port, host, () => {
+  console.log(`PEFY portable MCP runtime listening on ${host}:${port}`);
+  previewSelfTest().catch((error) => {
+    previewQualification = {
+      enabled: true,
+      status: "fail",
+      updatedAt: new Date().toISOString(),
+      error: String(error?.message || error)
+    };
+    console.error(JSON.stringify({
+      event: "PEFY_REMOTE_SELFTEST",
+      status: "FAIL",
+      ...previewQualification
+    }));
+    process.exit(1);
+  });
+});
+
+const shutdown = () => server.close(() => process.exit(0));
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

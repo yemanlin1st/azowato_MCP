@@ -1,10 +1,12 @@
 {
-  "name": "pefy-experience-media-mcp",
-  "version": "1.0.1",
+  "name": "pefy-meta-supra-capability-mesh-mcp",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
-  "description": "Read-only MCP control plane for PEFY-GG Experience & Media Swarm OS",
-  "engines": { "node": "22.x" },
+  "description": "Read-only governed MCP control plane for the PEFY-GG Meta Supra Capability Mesh and ΩDEVFABRIC",
+  "engines": {
+    "node": "22.x"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.26.0",
     "mcp-handler": "1.1.0",
@@ -13,5 +15,20 @@
   "devDependencies": {
     "@types/node": "22.15.3",
     "typescript": "5.9.3"
-  }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test:logic": "node scripts/validate_devfabric.mjs",
+    "qualify": "npm run typecheck && npm run test:logic && npm run test:egress && npm run test:mcp && npm run test:mcp-network && npm run test:preview && npm run test:wave2",
+    "test:egress": "node scripts/validate_egress_policy.mjs",
+    "test:mcp": "node scripts/smoke_mcp.mjs",
+    "test:mcp-network": "node scripts/network_mcp_smoke.mjs",
+    "start:portable": "npm start",
+    "start": "node scripts/portable_server.mjs",
+    "test:extended": "node scripts/validate_extended_fabric.mjs",
+    "test:wave2": "node scripts/reconcile_wave2.mjs",
+    "start:preview": "node scripts/portable_server.mjs --preview-selftest",
+    "test:preview": "node scripts/portable_preview_smoke.mjs"
+  },
+  "packageManager": "npm@10.9.2"
 }

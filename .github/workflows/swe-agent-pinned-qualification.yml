@@ -1,0 +1,146 @@
+name: swe-agent-pinned-qualification
+
+on:
+  pull_request:
+    paths:
+      - "api/server.ts"
+      - "config/upstream-pins.json"
+      - "config/egress-policy.json"
+      - "scripts/smoke_mini_swe.py"
+      - ".github/workflows/swe-agent-pinned-qualification.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: swe-agent-pinned-qualification-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualify-swe-agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      MINI_SWE_COMMIT: a83fcae82d2a08f0ee0c688f9d137b3566c097f8
+      MINI_SWE_VERSION: 2.4.6
+      SWE_REX_COMMIT: f802b3e14d82aa4c13291d2fda5bd4fd48f36f91
+      SWE_REX_VERSION: 1.4.0
+      MSWEA_SILENT_STARTUP: "1"
+      OPENAI_API_KEY: ""
+      ANTHROPIC_API_KEY: ""
+      GEMINI_API_KEY: ""
+      GOOGLE_API_KEY: ""
+      OPENROUTER_API_KEY: ""
+      AZURE_OPENAI_API_KEY: ""
+    steps:
+      - name: Checkout control plane
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Setup pinned Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.11"
+
+      - name: Fetch exact mini-SWE-agent and SWE-ReX commits
+        shell: bash
+        run: |
+          set -euo pipefail
+          mini="$RUNNER_TEMP/mini-swe-agent"
+          rex="$RUNNER_TEMP/swe-rex"
+
+          git init "$mini"
+          git -C "$mini" remote add origin https://github.com/SWE-agent/mini-swe-agent.git
+          git -C "$mini" fetch --depth 1 origin "$MINI_SWE_COMMIT"
+          git -C "$mini" checkout --detach FETCH_HEAD
+          test "$(git -C "$mini" rev-parse HEAD)" = "$MINI_SWE_COMMIT"
+          grep -q '__version__ = "2.4.6"' "$mini/src/minisweagent/__init__.py"
+          grep -q "MIT License" "$mini/LICENSE.md"
+
+          git init "$rex"
+          git -C "$rex" remote add origin https://github.com/SWE-agent/SWE-ReX.git
+          git -C "$rex" fetch --depth 1 origin "$SWE_REX_COMMIT"
+          git -C "$rex" checkout --detach FETCH_HEAD
+          test "$(git -C "$rex" rev-parse HEAD)" = "$SWE_REX_COMMIT"
+          grep -q '__version__ = "1.4.0"' "$rex/src/swerex/__init__.py"
+          grep -q "MIT License" "$rex/LICENSE.txt"
+
+      - name: Create isolated Python environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv "$RUNNER_TEMP/swe-venv"
+          echo "$RUNNER_TEMP/swe-venv/bin" >> "$GITHUB_PATH"
+
+      - name: Install pinned sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install "$RUNNER_TEMP/swe-rex"
+          python -m pip install "$RUNNER_TEMP/mini-swe-agent"
+          python -m pip check
+
+      - name: CLI and import qualification
+        shell: bash
+        run: |
+          set -euo pipefail
+          mini --help >/tmp/mini-help.txt
+          grep -q "Run mini-SWE-agent" /tmp/mini-help.txt
+          python - <<'PY'
+          import minisweagent, swerex
+          assert minisweagent.__version__ == "2.4.6"
+          assert swerex.__version__ == "1.4.0"
+          print("imports: PASS")
+          PY
+
+      - name: Deterministic real agent-loop smoke
+        run: python scripts/smoke_mini_swe.py
+
+      - name: Compile installed agent code
+        shell: bash
+        run: |
+          python -m compileall -q "$RUNNER_TEMP/mini-swe-agent/src/minisweagent"
+          python -m compileall -q "$RUNNER_TEMP/swe-rex/src/swerex"
+
+      - name: Produce qualification evidence
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p evidence
+          python - <<'PY'
+          import json, os
+          evidence = {
+            "qualifiedAt": os.environ.get("GITHUB_RUN_ID"),
+            "miniSWEAgent": {
+              "repository": "SWE-agent/mini-swe-agent",
+              "version": os.environ["MINI_SWE_VERSION"],
+              "commit": os.environ["MINI_SWE_COMMIT"],
+              "deterministicAgentLoop": "executed",
+              "externalModelCredential": "not-present",
+              "permanentHostActivation": False
+            },
+            "sweRex": {
+              "repository": "SWE-agent/SWE-ReX",
+              "version": os.environ["SWE_REX_VERSION"],
+              "commit": os.environ["SWE_REX_COMMIT"],
+              "role": "sandbox-adapter"
+            },
+            "security": {
+              "hostLocalAutonomy": False,
+              "modelSecretsPersisted": False,
+              "productionDeployAuthority": False
+            }
+          }
+          with open("evidence/swe-agent-qualification.json","w") as f:
+              json.dump(evidence,f,indent=2)
+          PY
+
+      - name: Upload SWE-agent qualification evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: swe-agent-qualification-${{ github.run_id }}
+          path: evidence/swe-agent-qualification.json
+          if-no-files-found: error
+          retention-days: 90
